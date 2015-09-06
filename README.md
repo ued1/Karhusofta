@@ -5,4 +5,4 @@
 
 ### Kuvaus
 
-Karhukoplalle hyötyohjelma keikkojen organisointia ja tilastointia varten. Tarkempi kuvaus dokumentaatiossa (linkki yllä).
+Karhukoplalle web-sovellus järjestelmällisen rosvoamisen tehostamiseksi. Hyötyohjelman tavoitteena on tehostaa keikkojen organisointia tarjoten keikkojen ilmoittautumis- ja hallintajärjestelmä. Sovelluksessa on myös tilastot ja tiedot keikkojen onnistumisista.

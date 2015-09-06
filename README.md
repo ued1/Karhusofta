@@ -1,10 +1,8 @@
-# Tietokantasovelluksen esittelysivu
+# Karhusofta
 
-Yleisiä linkkejä:
+* [Linkki sovellukseen (web)](http://tnokka.users.cs.helsinki.fi/karhusofta/)
+* [Linkki dokumentaatioon (pdf)](https://github.com/ued1/Karhusofta/blob/master/doc/dokumentaatio.pdf)
 
-* [Linkki sovellukseeni](https://www.cs.helsinki.fi)
-* [Linkki dokumentaatiooni](https://www.github.com)
+### Kuvaus
 
-## Työn aihe
-
-Laita tähän aihekuvaus tai [linkki valmiiseen aiheeseen](http://advancedkittenry.github.io/suunnittelu_ja_tyoymparisto/aiheet/Pokemon-kanta.html) 
+Karhukoplalle hyötyohjelma keikkojen organisointia ja tilastointia varten. Tarkempi kuvaus dokumentaatiossa (linkki yllä).

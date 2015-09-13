@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Karhu: (nimi)</h2>
+
+<p>(kuva)</p>
+
+<p><strong>Liittymispäivä:</strong> (pvm)</p>
+<p><strong>Saldo:</strong> (luku)</p>
+<p><strong>Taidot:</strong> (taidot)</p>
+
+<p>
+    <a href="#" class="btn btn-danger">Poista</a>
+    <a href="{{base_path}}/karhut/0/muokkaa" class="btn btn-default">Muokkaa</a>
+</p>
+
+<p>
+    <a href="{{base_path}}/karhut" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Uuden keikan luonti</h2>
+
+<form>
+    <div class="form-group">
+        <label>Keikan nimi</label>
+        <input class="form-control" type="text">
+    </div>
+    
+    <div class="form-group">
+        <label>Valitse kohde</label>
+        <select class="form-control">
+            <option>vaihtoehto 1</option>
+            <option>vaihtoehto 2</option>
+            <option>vaihtoehto 3</option>
+        </select>    
+    </div>
+    
+    <div class="form-group">
+        <label>Osallistujamaara</label>
+        <input class="form-control" type="text">
+    </div>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Tallenna</button>
+    </div>
+    
+</form>
+<p>
+    <a href="{{base_path}}/keikat" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

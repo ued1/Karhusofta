@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Karhut</h2>
+
+<p>
+    <a href="{{base_path}}/karhut/uusi" class="btn btn-primary">Uusi karhu</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nimi</th>
+            <th>Liittymispäivä</th>
+            <th>Saldo</th>
+            <th>Taidot</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="{{base_path}}/karhut/0">Esimerkkikarhu</a></td>
+            <td>01.01.2000</td>
+            <td>1000</td>
+            <td>autonkuljettaja<br>murtoveikko<br>ryhmänjohtaja</td>
+            <td><a class="btn btn-default btn-sm" href="{{base_path}}/karhut/0/muokkaa">Muokkaa</a></td>
+        </tr>
+        <tr>
+            <td>Esimerkkikarhu2</td>
+            <td>02.02.2000</td>
+            <td>2000</td>
+            <td>murtoveikko</td>
+            <td><a class="btn btn-default btn-sm" href="{{base_path}}/karhut/0/muokkaa">Muokkaa</a></td>
+        </tr>
+        
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Muokkaa karhua</h2>
+
+<form>
+    <div class="form-group">
+        <label>Nimi</label>
+        <input class="form-control" type="text" value="Esimerkkinimi">
+    </div>
+    
+    <div class="form-group">
+        <label>Salasana</label>
+        <input class="form-control" type="text" value="Esimerkkisalasana">
+    </div>
+    
+    <div class="form-group">
+        <label>Roolit<br></label>
+        <label class="checkbox-inline">
+            <input type="checkbox" value="esim1"> esim1
+        </label>
+        <label class="checkbox-inline">
+            <input type="checkbox" value="esim2"> esim2
+        </label>
+        <label class="checkbox-inline">
+            <input type="checkbox" value="esim3"> esim3
+        </label>
+    </div>
+        
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Tallenna</button>
+    </div>
+    
+</form>
+
+<p>
+    <a href="{{base_path}}/karhut" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Keikka: (nimi)</h2>
+
+<p><strong>Kohde:</strong> <a href="{{base_path}}/kohteet/0">(kohteen nimi)</a></p>
+<p><strong>Arvio saaliista:</strong> (luku)</p>
+<p><strong>Ryhmänjohtaja:</strong> <a href="{{base_path}}/karhut/0">(karhun nimi)</a></p>
+<p><strong>Ilmoittautuneita:</strong> (luku)</p>
+<p><strong>Paikkoja jäljellä:</strong> (luku)</p>
+
+<p>
+    <a href="#" class="btn btn-danger">Poista</a>
+</p>
+
+<p>
+    <a href="{{base_path}}/keikat" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

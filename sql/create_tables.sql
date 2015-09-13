@@ -9,7 +9,8 @@ CREATE TABLE Karhu(
     karhuID SERIAL PRIMARY KEY,
     nimi varchar(20) UNIQUE NOT NULL,
     salasana varchar(20) NOT NULL,
-    saldo INTEGER NOT NULL
+    saldo INTEGER NOT NULL,
+    pvm DATE
 );
 
 CREATE TABLE Osaaminen(

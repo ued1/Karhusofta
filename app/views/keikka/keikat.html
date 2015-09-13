@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Keikat</h2>
+
+<p>
+    <a href="{{base_path}}/keikat/uusi" class="btn btn-primary">Uusi keikka</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Keikan nimi</th>
+            <th>Kohteen nimi</th>
+            <th>Arvio saaliista</th>
+            <th>Ilmoittautuneita</th>
+            <th>Paikkoja jäljellä</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="{{base_path}}/keikat/0">Esimerkkikeikka</a></td>
+            <td><a href="{{base_path}}/kohteet/0">Esimerkkikohde</a></td>
+            <td>100000</td>
+            <td>1</td>
+            <td>5</td>
+            <td><a class="btn btn-default btn-sm" href="#">Ilmoittaudu</a></td>
+        </tr>
+
+    </tbody>
+</table>
+
+{% endblock %}

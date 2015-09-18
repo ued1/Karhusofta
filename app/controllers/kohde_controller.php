@@ -7,7 +7,7 @@
             View::make('kohde/kohteet.html', array('kohteet' => $kohteet));
         }
         
-        public static function luo() {
+        public static function uusi() {
             View::make('kohde/uusi.html');
         }
         
@@ -18,6 +18,19 @@
         public static function nayta($kohdeid) {
             $kohde = Kohde::etsi($kohdeid);
             View::make('kohde/kohde.html', array('kohde' => $kohde));
+        }
+        
+        public static function lisaa() {
+            $parametrit = $_POST;
+            $kohde = new Kohde(array(
+                'nimi' => $parametrit['nimi'],
+                'osoite' => $parametrit['osoite'],
+                'kuvaus' => $parametrit['kuvaus'],
+                'arvo' => $parametrit['arvo']
+            ));
+            $kohde->tallenna();
+            Redirect::to('/kohteet/' . $kohde->kohdeid, array('viesti' => 'Uusi kohde lisätty'));
+            
         }
         
     }

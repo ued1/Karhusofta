@@ -1,14 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+
 <h2>Karhu: {{karhu.nimi}}</h2>
 
 <p>(kuva)</p>
 
 <p><strong>Liittymispäivä:</strong> {{karhu.pvm}}</p>
 <p><strong>Saldo:</strong> {{karhu.saldo}}</p>
-<p><strong>Taidot:</strong> (taidot)</p>
-
+<p><strong>Taidot:</strong></p>
+<p>
+{% if karhu.taidot %}
+    {% for taito in karhu.taidot %}
+        {{taito.nimi}}<br>
+    {% endfor %}
+{% endif %}
+</p>
 <p>
     <a href="#" class="btn btn-danger">Poista</a>
     <a href="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa" class="btn btn-default">Muokkaa</a>

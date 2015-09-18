@@ -7,7 +7,7 @@ class KarhuController extends BaseController {
         View::make('karhu/karhut.html', array('karhut' => $karhut));
     }
 
-    public static function luo() {
+    public static function uusi() {
         View::make('karhu/uusi.html');
     }
     
@@ -19,5 +19,17 @@ class KarhuController extends BaseController {
         $karhu = Karhu::etsi($karhuid);
         View::make('karhu/karhu.html', array('karhu' => $karhu));
     }
+    
+    public static function lisaa() {
+        $parametrit = $_POST;
+        $karhu = new Karhu(array(
+            'nimi' => $parametrit['nimi'],
+            'salasana' => $parametrit['salasana'],
+            'saldo' => 0
+        ));
+        $karhu->tallenna();
+        Redirect::to('/karhut/' . $karhu->karhuid, array('viesti' => 'Uusi karhu lisätty'));
+    }
+    
     
 }

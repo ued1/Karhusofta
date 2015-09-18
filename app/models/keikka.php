@@ -48,4 +48,11 @@ class Keikka extends BaseModel {
         return null;
     }
 
+    public function tallenna() {
+        $kysely = DB::connection()->prepare('INSERT INTO Keikka (nimi, osallistujamaara, kohdeid, karhuid) VALUES (:nimi, :osallistujamaara, :kohdeid, :karhuid) RETURNING keikkaid');
+        $kysely->execute(array('nimi' => $this->nimi, 'osallistujamaara' => $this->osallistujamaara, 'kohdeid' => $this->kohdeid, 'karhuid' => $this->karhuid));
+        $rivi = $kysely->fetch();
+        $this->keikkaid = $rivi['keikkaid'];
+    }
+
 }

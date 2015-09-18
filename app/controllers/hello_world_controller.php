@@ -9,10 +9,13 @@ class HelloWorldController extends BaseController {
     }
 
     public static function sandbox() {
-        $ekakarhu = Karhu::etsi(1);
-        $karhut = Karhu::kaikki();
-        Kint::dump($karhut);
-        Kint::dump($ekakarhu);
+        //$ekakarhu = Karhu::etsi(1);
+        //$karhut = Karhu::kaikki();
+        //Kint::dump($karhut);
+        //Kint::dump($ekakarhu);
+        $luku = 1;
+        echo Rooli::karhun_taidot($luku);
+        
         
         
     }

@@ -3,25 +3,25 @@
 
 <h2>Uuden kohteen luonti</h2>
 
-<form>
+<form method="post" action="{{base_path}}/kohteet">
     <div class="form-group">
         <label>Kohteen nimi</label>
-        <input class="form-control" type="text">
+        <input name="nimi" class="form-control" type="text">
     </div>
     
     <div class="form-group">
         <label>Kohteen osoite</label>
-        <input class="form-control" type="text">
+        <input name="osoite" class="form-control" type="text">
     </div>
     
     <div class="form-group">
         <label>Kohteen kuvaus</label>
-        <input class="form-control" type="text">
+        <input name="kuvaus" class="form-control" type="text">
     </div>
     
     <div class="form-group">
         <label>Arvio ryöstösaaliista</label>
-        <input class="form-control" type="text">
+        <input name="arvo" class="form-control" type="text">
     </div>
     
     <div class="form-group">

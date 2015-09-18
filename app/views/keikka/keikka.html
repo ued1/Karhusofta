@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+
 <h2>Keikka: {{keikka.nimi}}</h2>
 
 <p><strong>Kohde: </strong> <a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></p>

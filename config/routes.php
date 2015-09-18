@@ -8,24 +8,32 @@ $routes->get('/karhut', function() {
     KarhuController::index();
 });
 
-$routes->get('/karhut/uusi', function() {
-    KarhuController::luo();
+$routes->post('/karhut', function() {
+    KarhuController::lisaa();
 });
 
-$routes->get('/karhut/:karhuid', function($karhuid) {
-    KarhuController::nayta($karhuid);
+$routes->get('/karhut/uusi', function() {
+    KarhuController::uusi();
 });
 
 $routes->get('/karhut/:karhuid/muokkaa', function($karhuid) {
     KarhuController::muokkaa($karhuid);
 });
 
+$routes->get('/karhut/:karhuid', function($karhuid) {
+    KarhuController::nayta($karhuid);
+});
+
 $routes->get('/keikat', function() {
     KeikkaController::index();
 });
 
+$routes->post('/keikat', function() {
+    KeikkaController::lisaa();
+});
+
 $routes->get('/keikat/uusi', function() {
-    KeikkaController::luo();
+    KeikkaController::uusi();
 });
 
 $routes->get('/keikat/:keikkaid', function($keikkaid) {
@@ -36,8 +44,12 @@ $routes->get('/kohteet', function() {
     KohdeController::index();
 });
 
+$routes->post('/kohteet', function() {
+    KohdeController::lisaa();
+});
+
 $routes->get('/kohteet/uusi', function() {
-    KohdeController::luo();
+    KohdeController::uusi();
 });
 
 $routes->get('/kohteet/:kohdeid/muokkaa', function($kohdeid) {

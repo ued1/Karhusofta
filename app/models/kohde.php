@@ -43,5 +43,12 @@ class Kohde extends BaseModel {
         }
         return null;
     }
+    
+    public function tallenna() {
+        $kysely = DB::connection()->prepare('INSERT INTO Kohde (nimi, osoite, kuvaus, arvo) VALUES (:nimi, :osoite, :kuvaus, :arvo) RETURNING kohdeid');
+        $kysely->execute(array('nimi' => $this->nimi, 'osoite' => $this->osoite, 'kuvaus' => $this->kuvaus, 'arvo' => $this->arvo));
+        $rivi = $kysely->fetch();
+        $this->kohdeid = $rivi['kohdeid'];
+    }
 
 }

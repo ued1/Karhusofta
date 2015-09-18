@@ -3,17 +3,17 @@
 
 <h2>Uuden karhun luonti</h2>
 
-<form>
+<form method="post" action="{{base_path}}/karhut">
     <div class="form-group">
         <label>Karhun nimi</label>
-        <input class="form-control" type="text">
+        <input name="nimi" class="form-control" type="text">
     </div>
     
     <div class="form-group">
         <label>Salasana</label>
-        <input class="form-control" type="text">
+        <input name="salasana" class="form-control" type="text">
     </div>
-     
+        
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Tallenna</button>
     </div>

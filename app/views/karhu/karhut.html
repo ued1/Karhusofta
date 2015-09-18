@@ -23,7 +23,11 @@
                 <td><a href="{{base_path}}/karhut/{{karhu.karhuid}}">{{karhu.nimi}}</a></td>
                 <td>{{karhu.pvm}}</td>
                 <td>{{karhu.saldo}}</td>
-                <td>--taidot--</td>
+                <td>
+                    {% for taito in karhu.taidot %}
+                        {{taito.nimi}} <br>
+                    {% endfor %}
+                </td>
                 <td><a class="btn btn-default btn-sm" href="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa">Muokkaa</a></td>
             </tr>
         {% endfor %}

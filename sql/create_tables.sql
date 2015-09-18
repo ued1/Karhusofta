@@ -21,7 +21,7 @@ CREATE TABLE Osaaminen(
 
 CREATE TABLE Kohde(
     kohdeID SERIAL PRIMARY KEY,
-    nimi varchar(20) NOT NULL,
+    nimi varchar(30) NOT NULL,
     osoite varchar(50),
     kuvaus varchar(500),
     arvo INTEGER NOT NULL

@@ -3,19 +3,21 @@
     class KohdeController extends BaseController {
         
         public static function index() {
-            View::make('kohde/kohteet.html');
+            $kohteet = Kohde::kaikki();
+            View::make('kohde/kohteet.html', array('kohteet' => $kohteet));
         }
         
         public static function luo() {
             View::make('kohde/uusi.html');
         }
         
-        public static function muokkaa($id) {
+        public static function muokkaa($kohdeid) {
             View::make('kohde/muokkaus.html');
         }
         
-        public static function nayta($id) {
-            View::make('kohde/kohde.html');
+        public static function nayta($kohdeid) {
+            $kohde = Kohde::etsi($kohdeid);
+            View::make('kohde/kohde.html', array('kohde' => $kohde));
         }
         
     }

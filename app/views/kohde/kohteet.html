@@ -18,14 +18,15 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><a href="{{base_path}}/kohteet/0">Esimerkkikohde</a></td>
-            <td>Esimerkkiosoite</td>
-            <td>100000</td>
-            <td><a class="btn btn-default btn-sm" href="#">Aloita keikka</a></td>
-            <td><a class="btn btn-default btn-sm" href="{{base_path}}/kohteet/0/muokkaa">Muokkaa</a></td>
+        {% for kohde in kohteet %}
+            <tr>
+                <td><a href="{{base_path}}/kohteet/{{kohde.kohdeid}}">{{kohde.nimi}}</a></td>
+                <td>{{kohde.osoite}}</td>
+                <td>{{kohde.arvo}}</td>
+                <td><a class="btn btn-default btn-sm" href="#">Aloita keikka</a></td>
+                <td><a class="btn btn-default btn-sm" href="{{base_path}}/kohteet/{{kohde.kohdeid}}/muokkaa">Muokkaa</a></td>
         </tr>
-
+        {% endfor %}
     </tbody>
 </table>
 

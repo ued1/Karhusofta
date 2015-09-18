@@ -18,21 +18,15 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><a href="{{base_path}}/karhut/0">Esimerkkikarhu</a></td>
-            <td>01.01.2000</td>
-            <td>1000</td>
-            <td>autonkuljettaja<br>murtoveikko<br>ryhmänjohtaja</td>
-            <td><a class="btn btn-default btn-sm" href="{{base_path}}/karhut/0/muokkaa">Muokkaa</a></td>
-        </tr>
-        <tr>
-            <td>Esimerkkikarhu2</td>
-            <td>02.02.2000</td>
-            <td>2000</td>
-            <td>murtoveikko</td>
-            <td><a class="btn btn-default btn-sm" href="{{base_path}}/karhut/0/muokkaa">Muokkaa</a></td>
-        </tr>
-        
+        {% for karhu in karhut %}
+            <tr>
+                <td><a href="{{base_path}}/karhut/{{karhu.karhuid}}">{{karhu.nimi}}</a></td>
+                <td>{{karhu.pvm}}</td>
+                <td>{{karhu.saldo}}</td>
+                <td>--taidot--</td>
+                <td><a class="btn btn-default btn-sm" href="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa">Muokkaa</a></td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 

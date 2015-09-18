@@ -12,12 +12,12 @@ $routes->get('/karhut/uusi', function() {
     KarhuController::luo();
 });
 
-$routes->get('/karhut/:id', function($id) {
-    KarhuController::nayta($id);
+$routes->get('/karhut/:karhuid', function($karhuid) {
+    KarhuController::nayta($karhuid);
 });
 
-$routes->get('/karhut/:id/muokkaa', function($id) {
-    KarhuController::muokkaa($id);
+$routes->get('/karhut/:karhuid/muokkaa', function($karhuid) {
+    KarhuController::muokkaa($karhuid);
 });
 
 $routes->get('/keikat', function() {
@@ -28,8 +28,8 @@ $routes->get('/keikat/uusi', function() {
     KeikkaController::luo();
 });
 
-$routes->get('/keikat/:id', function($id) {
-    KeikkaController::nayta($id);
+$routes->get('/keikat/:keikkaid', function($keikkaid) {
+    KeikkaController::nayta($keikkaid);
 });
 
 $routes->get('/kohteet', function() {
@@ -40,12 +40,12 @@ $routes->get('/kohteet/uusi', function() {
     KohdeController::luo();
 });
 
-$routes->get('/kohteet/:id/muokkaa', function($id) {
-    KohdeController::muokkaa($id);
+$routes->get('/kohteet/:kohdeid/muokkaa', function($kohdeid) {
+    KohdeController::muokkaa($kohdeid);
 });
 
-$routes->get('/kohteet/:id', function($id) {
-    KohdeController::nayta($id);
+$routes->get('/kohteet/:kohdeid', function($kohdeid) {
+    KohdeController::nayta($kohdeid);
 });
 
 $routes->get('/tilasto', function() {

@@ -19,15 +19,16 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td><a href="{{base_path}}/keikat/0">Esimerkkikeikka</a></td>
-            <td><a href="{{base_path}}/kohteet/0">Esimerkkikohde</a></td>
-            <td>100000</td>
-            <td>1</td>
-            <td>5</td>
-            <td><a class="btn btn-default btn-sm" href="#">Ilmoittaudu</a></td>
+        {% for keikka in keikat %}
+            <tr>
+                <td><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></td>
+                <td><a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></td>
+                <td>{{keikka.kohdearvo}}</td>
+                <td>--luku--</td>
+                <td>--luku--</td>
+                <td><a class="btn btn-default btn-sm" href="#">Ilmoittaudu</a></td>
         </tr>
-
+        {% endfor %}
     </tbody>
 </table>
 

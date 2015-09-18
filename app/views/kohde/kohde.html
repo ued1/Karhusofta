@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Kohde: (nimi)</h2>
+<h2>Kohde: {{kohde.nimi}}</h2>
 
 <p>(kuva)</p>
 
-<p><strong>Osoite:</strong> (osoite)</p>
-<p><strong>Kuvaus:</strong> (kuvaus)</p>
-<p><strong>Arvio saaliista:</strong> (luku)</p>
+<p><strong>Osoite:</strong> {{kohde.osoite}}</p>
+<p><strong>Kuvaus:</strong> {{kohde.kuvaus}}</p>
+<p><strong>Arvio saaliista:</strong> {{kohde.arvo}}</p>
 
 <p>
     <a href="#" class="btn btn-danger">Poista</a>
-    <a href="{{base_path}}/kohteet/0/muokkaa" class="btn btn-default">Muokkaa</a>
+    <a href="{{base_path}}/kohteet/{{kohde.kohdeid}}/muokkaa" class="btn btn-default">Muokkaa</a>
 </p>
 
 <p>

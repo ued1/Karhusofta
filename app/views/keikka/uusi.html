@@ -1,35 +1,57 @@
+{% import "makrot/virheet.html" as virheet_makro  %}
 {% extends "base.html" %}
 {% block content %}
 
 <h2>Uuden keikan luonti</h2>
 
+{% if virheet %}
+    {{virheet_makro.listaa_virheet(virheet)}}
+{% endif %}
+
 <form method="post" action="{{base_path}}/keikat">
     <div class="form-group">
         <label>Keikan nimi</label>
-        <input name="nimi" class="form-control" type="text">
+        <input name="nimi" class="form-control" value="{{attribuutit.nimi}}" type="text">
     </div>
            
     <div class="form-group">
-        <label>Valitse kohde<br></label>
-        {% for kohde in kohteet %}
-        <div class="radio">
-            <label><input type="radio" name="kohdeid" value="{{kohde.kohdeid}}"><strong>{{kohde.nimi}}</strong> - arvo {{kohde.arvo}}</label>
-        </div>
-        {% endfor %}
+        <label>Keikan kohde<br></label>
+        <select class="form-control" name="kohde">
+            {% if not valittu_kohde %}
+                <option value="0" selected="selected"> - Valitse kohde - </option>
+            {% else %}
+                <option value="{{valittu_kohde.kohdeid}}" selected="selected">{{valittu_kohde.nimi}}</option> 
+            {% endif %}
+            
+            {% for kohde in kohteet %}
+                {% if valittu_kohde.kohdeid != kohde.kohdeid %}
+                    <option value="{{kohde.kohdeid}}">{{kohde.nimi}}</option>
+                {% endif %}
+            {% endfor %}
+            
+        </select>
     </div>
         
     <div class="form-group">
         <label>Osallistujamaara</label>
-        <input name="osallistujamaara" class="form-control" type="text">
+        <input name="osallistujamaara" class="form-control" value="{{attribuutit.osallistujamaara}}" type="text">
     </div>
     
     <div class="form-group">
         <label>Vastuukarhu<br></label>
-        {% for karhu in karhut %}
-        <div class="radio">
-            <label><input type="radio" name="karhuid" value="{{karhu.karhuid}}"><strong>{{karhu.nimi}}</strong></label>
-        </div>
-        {% endfor %}
+        <select class="form-control" name="karhu">
+            {% if not valittu_karhu %}
+                <option value="0" selected="selected"> - Valitse karhu - </option>
+            {% else %}
+                <option value="{{valittu_karhu.karhuid}}" selected="selected">{{valittu_karhu.nimi}}</option>
+            {% endif %}
+            
+            {% for karhu in karhut %}
+                {% if valittu_karhu.karhuid != karhu.karhuid %}
+                    <option value="{{karhu.karhuid}}">{{karhu.nimi}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
     </div>
     
     

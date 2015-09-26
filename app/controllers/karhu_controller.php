@@ -22,14 +22,21 @@ class KarhuController extends BaseController {
     
     public static function lisaa() {
         $parametrit = $_POST;
-        $karhu = new Karhu(array(
+        $attribuutit = array(
             'nimi' => $parametrit['nimi'],
             'salasana' => $parametrit['salasana'],
             'saldo' => 0
-        ));
-        $karhu->tallenna();
-        Redirect::to('/karhut/' . $karhu->karhuid, array('viesti' => 'Uusi karhu lisätty'));
+        );
+        $karhu = new Karhu($attribuutit);
+        $virheet = $karhu->virheet();
+        if(count($virheet) == 0) {
+            $karhu->tallenna();
+            Redirect::to('/karhut/' . $karhu->karhuid, array('viesti' => 'Uusi karhu lisätty'));
+        } else {
+            View::make('karhu/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
+        }
     }
+    
     
     
 }

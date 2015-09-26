@@ -6,6 +6,7 @@ class Karhu extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validoi_nimen_pituus', 'validoi_salasanan_pituus');
     }
 
     public static function kaikki() {
@@ -41,24 +42,44 @@ class Karhu extends BaseModel {
                 'pvm' => $rivi['pvm'],
                 'taidot' => $t
             ));
-            
+
             return $karhu;
         }
         return null;
     }
-    
+
     public static function lukumaara() {
         $kysely = DB::connection()->prepare('SELECT count(*) FROM Karhu');
         $kysely->execute();
         $rivi = $kysely->fetch();
         return $rivi[0];
     }
-    
+
     public function tallenna() {
         $kysely = DB::connection()->prepare('INSERT INTO Karhu (nimi, salasana, saldo, pvm) VALUES (:nimi, :salasana, 0, now()::date) RETURNING karhuid');
         $kysely->execute(array('nimi' => $this->nimi, 'salasana' => $this->salasana));
         $rivi = $kysely->fetch();
         $this->karhuid = $rivi['karhuid'];
+    }
+
+    public function validoi_nimen_pituus() {
+        $virheet = array();
+        if ($this->nimi == '') {
+            $virheet[] = 'Karhulla tulee olla nimi!';
+        } elseif (!$this->merkkijono_tarpeeksi_pitka($this->nimi, 2) || !$this->merkkijono_tarpeeksi_lyhyt($this->nimi, 20)) {
+            $virheet[] = 'Karhun nimen tulee olla 2-20 merkkiä pitkä!';
+        }
+        return $virheet;
+    }
+
+    public function validoi_salasanan_pituus() {
+        $virheet = array();
+        if ($this->salasana == '') {
+            $virheet[] = 'Karhulla tulee olla salasana!';
+        } elseif (!$this->merkkijono_tarpeeksi_pitka($this->salasana, 5) || !$this->merkkijono_tarpeeksi_lyhyt($this->salasana, 20)) {
+            $virheet[] = 'Karhun salasanan tulee olla 5-20 merkkiä pitkä!';
+        }
+        return $virheet;
     }
 
 }

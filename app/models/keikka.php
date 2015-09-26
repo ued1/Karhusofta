@@ -6,6 +6,7 @@ class Keikka extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validoi_nimi', 'validoi_osallistujamaara', 'validoi_valinnat');
     }
 
     public static function kaikki() {
@@ -47,6 +48,16 @@ class Keikka extends BaseModel {
         }
         return null;
     }
+    
+    public static function onko_keikkaa_nimella($hakusana) {
+        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE nimi = :hakusana');
+        $kysely->execute(array('hakusana' => $hakusana));
+        $rivi = $kysely->fetch();
+        if($rivi) {
+            return TRUE;
+        }
+        return FALSE;
+    }
 
     public function tallenna() {
         $kysely = DB::connection()->prepare('INSERT INTO Keikka (nimi, osallistujamaara, kohdeid, karhuid) VALUES (:nimi, :osallistujamaara, :kohdeid, :karhuid) RETURNING keikkaid');
@@ -54,5 +65,41 @@ class Keikka extends BaseModel {
         $rivi = $kysely->fetch();
         $this->keikkaid = $rivi['keikkaid'];
     }
+    
+    public function validoi_nimi() {
+        $virheet = array();
+        if($this->nimi == ''|| !$this->merkkijono_tarpeeksi_lyhyt($this->nimi, 50)) {
+            $virheet[] = 'Keikalla tulee olla nimi, joka on 1-50 merkkiä pitkä!';
+        } elseif($this->onko_keikkaa_nimella($this->nimi)) {
+            $virheet[] = "Keikka nimeltään $this->nimi on jo olemassa, valitse toinen nimi!";
+        }
+        return $virheet;
+    }
+    
+    public function validoi_osallistujamaara() {
+        $virheet = array();
+        if(!is_numeric($this->osallistujamaara)) {
+            $virheet[] = 'Osallistujamäärä tulee ilmaista positiivisella kokonaisluvulla!';
+        } elseif($this->osallistujamaara == '') {
+            $virheet[] = 'Osallistujamäärä ei voi olla tyhjä!';
+        } elseif(!ctype_digit($this->osallistujamaara)) {
+            $virheet[] = 'Osallistujamäärän tulee olla kokonaisluku!';
+        } elseif($this->osallistujamaara < 2) {
+            $virheet[] = 'Osallistujia täytyy olla vähintään kaksi!';
+        } 
+        return $virheet;
+    }
+        
+    public function validoi_valinnat() {
+        $virheet = array();
+        if($this->kohdeid == '' || $this->kohdeid == 0) {
+            $virheet[] = 'Keikalle täytyy valita kohde!';
+        }
+        if($this->karhuid == '' || $this->karhuid == 0) {
+            $virheet[] = 'Keikalle täytyy valita vastuukarhu!';
+        }
+        return $virheet;
+    }
+        
 
 }

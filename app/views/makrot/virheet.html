@@ -1,0 +1,11 @@
+{% macro listaa_virheet(virheet) %}
+{% if virheet %}
+<div class="alert alert-danger">
+    <ul>
+        {% for virhe in virheet %}
+        <li>{{virhe}}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endmacro %}

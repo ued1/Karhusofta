@@ -7,8 +7,18 @@
 
 Karhukoplalle web-sovellus järjestelmällisen rosvoamisen tehostamiseksi. Hyötyohjelman tavoitteena on tehostaa keikkojen organisointia tarjoten keikkojen ilmoittautumis- ja hallintajärjestelmä. Sovelluksessa on myös tilastot ja tiedot keikkojen onnistumisista.
 
-### Viikko 3 palautus
+### Viikko 4 palautus
 
-all, find ja save toimivat tietokohteille [karhut](http://tnokka.users.cs.helsinki.fi/karhusofta/karhut),
-[keikat](http://tnokka.users.cs.helsinki.fi/karhusofta/keikat), ja
-[kohteet](http://tnokka.users.cs.helsinki.fi/karhusofta/kohteet).
+CRUD toimii tietokohteille Karhu ja Kohde tietyin rajoituksin:
+- karhun voi poistaa, jos se ei ole ryhmänjohtajana jollakin keikalla
+- itseään ei voi poistaa
+- kohteen voi poistaa jos siihen ei ole liitetty keikkaa
+
+Validointi, virheilmoitukset ym. toimivat myös.
+
+Pakollinen kirjautuminen on käytössä. Tunnuksia (käyttäjätunnus - salasana):
+- testikarhu1 - salasana1
+- testikarhu2 - salasana2
+- testikarhu3 - salasana3
+- ...
+- testikarhu9	- salasana9

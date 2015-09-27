@@ -20,6 +20,10 @@ $routes->get('/karhut/:karhuid/muokkaa', function($karhuid) {
     KarhuController::muokkaa($karhuid);
 });
 
+$routes->post('/karhut/:karhuid/muokkaa', function($karhuid) {
+    KarhuController::paivita($karhuid);
+});
+
 $routes->get('/karhut/:karhuid', function($karhuid) {
     KarhuController::nayta($karhuid);
 });
@@ -55,6 +59,15 @@ $routes->get('/kohteet/uusi', function() {
 $routes->get('/kohteet/:kohdeid/muokkaa', function($kohdeid) {
     KohdeController::muokkaa($kohdeid);
 });
+
+$routes->post('/kohteet/:kohdeid/muokkaa', function($kohdeid) {
+    KohdeController::paivita($kohdeid);
+});
+
+$routes->post('/kohteet/:kohdeid/poista', function($kohdeid) {
+    KohdeController::poista($kohdeid);
+});
+
 
 $routes->get('/kohteet/:kohdeid', function($kohdeid) {
     KohdeController::nayta($kohdeid);

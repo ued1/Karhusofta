@@ -51,6 +51,27 @@ class Kohde extends BaseModel {
         $rivi = $kysely->fetch();
         $this->kohdeid = $rivi['kohdeid'];
     }
+    
+    public function paivita() {
+        $kysely = DB::connection()->prepare('UPDATE Kohde SET nimi = :nimi, osoite = :osoite, kuvaus = :kuvaus, arvo = :arvo WHERE kohdeid = :kohdeid');
+        $kysely->execute(array('kohdeid' => $this->kohdeid, 'nimi' => $this->nimi, 'osoite' => $this->osoite, 'kuvaus' => $this->kuvaus, 'arvo' => $this->arvo));
+    }
+    
+    public function voiko_poistaa() {
+        // kohteen voi poistaa vain, jos kyseiseen kohteeseen ei ole keikka
+        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE kohdeid = :kohdeid');
+        $kysely->execute(array('kohdeid' => $this->kohdeid));
+        $rivi = $kysely->fetch();
+        if($rivi) {
+            return FALSE;
+        }
+        return TRUE;
+    }
+    
+    public function poista() {
+        $kysely = DB::connection()->prepare('DELETE FROM Kohde WHERE kohdeid = :kohdeid');
+        $kysely->execute(array('kohdeid' => $this->kohdeid));
+    }
 
     public function validoi_nimi() {
         $virheet = array();

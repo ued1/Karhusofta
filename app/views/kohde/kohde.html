@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if viesti %}
 <div class="alert alert-success">
     {{viesti}}
 </div>
+{% endif %}
+
+{% if virhe %}
+<div class="alert alert-danger">
+    {{virhe}}
+</div>
+{% endif %}
 
 <h2>Kohde: {{kohde.nimi}}</h2>
 
@@ -13,8 +21,12 @@
 <p><strong>Kuvaus:</strong> {{kohde.kuvaus}}</p>
 <p><strong>Arvio saaliista:</strong> {{kohde.arvo}}</p>
 
+
+<form method="post" action="{{base_path}}/kohteet/{{kohde.kohdeid}}/poista" style="display: inline-block;">
+    <button type="submit" class="btn btn-danger">Poista</button>
+</form>
+
 <p>
-    <a href="#" class="btn btn-danger">Poista</a>
     <a href="{{base_path}}/kohteet/{{kohde.kohdeid}}/muokkaa" class="btn btn-default">Muokkaa</a>
 </p>
 

@@ -61,6 +61,11 @@ class Karhu extends BaseModel {
         $rivi = $kysely->fetch();
         $this->karhuid = $rivi['karhuid'];
     }
+    
+    public function paivita() {
+        $kysely = DB::connection()->prepare('UPDATE Karhu SET nimi = :nimi, salasana = :salasana WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $this->karhuid, 'nimi' => $this->nimi, 'salasana' => $this->salasana));
+    }
 
     public function validoi_nimen_pituus() {
         $virheet = array();

@@ -1,17 +1,22 @@
+{% import "makrot/virheet.html" as virheet_makro  %}
 {% extends "base.html" %}
 {% block content %}
 
 <h2>Muokkaa karhua</h2>
 
-<form>
+{% if virheet %}
+    {{virheet_makro.listaa_virheet(virheet)}}
+{% endif %}
+
+<form method="post" action="{{base_path}}/karhut/{{attribuutit.karhuid}}/muokkaa">
     <div class="form-group">
         <label>Nimi</label>
-        <input class="form-control" type="text" value="Esimerkkinimi">
+        <input name="nimi" class="form-control" type="text" value="{{attribuutit.nimi}}">
     </div>
     
     <div class="form-group">
         <label>Salasana</label>
-        <input class="form-control" type="text" value="Esimerkkisalasana">
+        <input name="salasana" class="form-control" type="password" value="{{attribuutit.salasana}}">
     </div>
     
     <div class="form-group">

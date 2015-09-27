@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if not user_logged_in %}
 <h2>Kirjaudu sisään</h2>
+{% endif %}
 
 {% if virhe %}
 <div class="alert alert-danger">
@@ -15,20 +17,33 @@
 </div>
 {% endif %}
 
-<form method="post" action="{{base_path}}/kirjaudu">
-    
-    <div class="form-group">
-        <label>Käyttäjätunnus</label>
-        <input type="text" class="form-control" name="tunnus">
-    </div>
-    
-    <div class="form-group">
-        <label>Salasana</label>
-        <input type="password" class="form-control" name="salasana">
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Kirjaudu sisään</button>
-    
-</form>
+{% if not user_logged_in %}
+    <form method="post" action="{{base_path}}/kirjaudu">
+        <div class="form-group">
+            <label>Käyttäjätunnus</label>
+            <input type="text" class="form-control" name="tunnus">
+        </div>
+        <div class="form-group">
+            <label>Salasana</label>
+            <input type="password" class="form-control" name="salasana">
+        </div>
+        <button type="submit" class="btn btn-primary">Kirjaudu sisään</button>
+    </form>
+{% else %}
+    {% if not viesti %}
+    <div class="alert alert-success">Olet kirjautunut sisään.</div>
+    {% endif %}
+    <ul>
+            <li><a href="{{base_path}}/karhut">Karhut</a></li>
+            <li><a href="{{base_path}}/keikat">Keikat</a></li>
+            <li><a href="{{base_path}}/kohteet">Kohteet</a></li>
+            <li><a href="{{base_path}}/tilasto">Tilasto</a></li>
+    </ul>
+    <br>
+    <form method="post" action="{{base_path}}/poistu" style="display: inline-block;">
+        <button type="submit" class="btn btn-default">Kirjaudu ulos</button>
+    </form>
+   
+{% endif %}
 
 {% endblock %}

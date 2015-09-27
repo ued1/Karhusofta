@@ -82,6 +82,18 @@ class Karhu extends BaseModel {
         $kysely = DB::connection()->prepare('DELETE FROM Karhu WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $this->karhuid));
     }
+    
+    public static function tunnistaudu($tunnus, $salasana) {
+        $kysely = DB::connection()->prepare('SELECT * FROM Karhu WHERE nimi = :tunnus AND salasana = :salasana LIMIT 1');
+        $kysely->execute(array('tunnus' => $tunnus, 'salasana' => $salasana));
+        $rivi = $kysely->fetch();
+        if($rivi) {
+            $karhu = new Karhu($rivi);
+            return $karhu;
+        } else {
+            return null;
+        }
+    }
 
     public function validoi_nimen_pituus() {
         $virheet = array();

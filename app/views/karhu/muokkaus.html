@@ -21,16 +21,25 @@
     
     <div class="form-group">
         <label>Roolit<br></label>
-        <label class="checkbox-inline">
-            <input type="checkbox" value="esim1"> esim1
-        </label>
-        <label class="checkbox-inline">
-            <input type="checkbox" value="esim2"> esim2
-        </label>
-        <label class="checkbox-inline">
-            <input type="checkbox" value="esim3"> esim3
-        </label>
+                
+        <select class="form-control" name="valitut_roolit[]" multiple="">
+            {% for rooli in roolit %}
+            {% set lisatty = false %}
+                {% if valitut_roolit %}
+                    {% for valittu_rooli in valitut_roolit %}
+                        {% if rooli.rooliid == valittu_rooli %}
+                            <option value="{{rooli.rooliid}}" selected="selected">{{rooli.nimi}}</option>
+                        {% set lisatty = true %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if lisatty == false %}
+                    <option value="{{rooli.rooliid}}">{{rooli.nimi}}</option>
+                {% endif %} 
+            {% endfor %}
+        </select>
     </div>
+       
         
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Tallenna</button>

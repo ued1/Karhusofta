@@ -8,12 +8,19 @@ class KarhuController extends BaseController {
     }
 
     public static function uusi() {
-        View::make('karhu/uusi.html');
+        $roolit = Rooli::kaikki();
+        View::make('karhu/uusi.html', array('roolit' => $roolit));
     }
     
     public static function muokkaa($karhuid) {
         $karhu = Karhu::etsi($karhuid);
-        View::make('karhu/muokkaus.html', array('attribuutit' => $karhu));
+        $roolit = Rooli::kaikki();
+        $karhu_roolit = Rooli::karhun_taidot($karhuid);
+        $valitut_roolit = array();
+        foreach($karhu_roolit as $rooli) {
+            $valitut_roolit[] = $rooli->rooliid;
+        }
+        View::make('karhu/muokkaus.html', array('attribuutit' => $karhu, 'roolit' => $roolit, 'valitut_roolit' => $valitut_roolit));
     }
     
     public static function nayta($karhuid) {
@@ -23,6 +30,11 @@ class KarhuController extends BaseController {
     
     public static function lisaa() {
         $parametrit = $_POST;
+        $valitut_roolit = array();
+        if(isset($parametrit['valitut_roolit'])) {
+            $valitut_roolit = $parametrit['valitut_roolit'];
+        }
+        
         $attribuutit = array(
             'nimi' => $parametrit['nimi'],
             'salasana' => $parametrit['salasana'],
@@ -32,14 +44,20 @@ class KarhuController extends BaseController {
         $virheet = $karhu->virheet();
         if(count($virheet) == 0) {
             $karhu->tallenna();
+            Rooli::lisaa_karhulle_roolit($karhu->karhuid, $valitut_roolit);
             Redirect::to('/karhut/' . $karhu->karhuid, array('viesti' => 'Uusi karhu lisätty'));
         } else {
-            View::make('karhu/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
+            $roolit = Rooli::kaikki();
+            View::make('karhu/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit, 'roolit' => $roolit, 'valitut_roolit' => $valitut_roolit));
         }
     }
     
     public static function paivita($karhuid) {
         $parametrit = $_POST;
+        $valitut_roolit = array();
+        if(isset($parametrit['valitut_roolit'])) {
+            $valitut_roolit = $parametrit['valitut_roolit'];
+        }
         $attribuutit = array(
             'karhuid' => $karhuid,
             'nimi' => $parametrit['nimi'],
@@ -49,9 +67,11 @@ class KarhuController extends BaseController {
         $virheet = $karhu->virheet();
         if(count($virheet) == 0) {
             $karhu->paivita();
+            Rooli::muokkaa_karhun_rooleja($karhu->karhuid, $valitut_roolit);
             Redirect::to('/karhut/' . $karhuid, array('viesti' => 'Karhua on muokattu onnistuneesti!'));
         } else {
-            View::make('karhu/muokkaus.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
+            $roolit = Rooli::kaikki();
+            View::make('karhu/muokkaus.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit, 'roolit' => $roolit, 'valitut_roolit' => $valitut_roolit));
         }
     }
     

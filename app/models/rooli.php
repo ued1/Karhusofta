@@ -56,5 +56,18 @@ class Rooli extends BaseModel {
         }
         return $taidot;
     }
+    
+    public static function lisaa_karhulle_roolit($karhuid, $roolit) {
+        foreach($roolit as $rooliid) {
+            $kysely = DB::connection()->prepare('INSERT INTO Osaaminen (karhuid, rooliid) VALUES (:karhuid, :rooliid)');
+            $kysely->execute(array('karhuid' => $karhuid, 'rooliid' => $rooliid));
+        }
+    }
+    
+    public static function muokkaa_karhun_rooleja($karhuid, $roolit) {
+        $kysely = DB::connection()->prepare('DELETE FROM Osaaminen WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $karhuid));
+        self::lisaa_karhulle_roolit($karhuid, $roolit);
+    }
 
 }

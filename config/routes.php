@@ -4,6 +4,10 @@ $routes->get('/', function() {
     EtusivuController::index();
 });
 
+$routes->post('/kirjaudu', function() {
+    EtusivuController::kirjaudu();
+});
+
 $routes->get('/karhut', function() {
     KarhuController::index();
 });

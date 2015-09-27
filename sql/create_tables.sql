@@ -14,8 +14,8 @@ CREATE TABLE Karhu(
 );
 
 CREATE TABLE Osaaminen(
-    karhuID INTEGER REFERENCES Karhu(karhuID),
-    rooliID INTEGER REFERENCES Rooli(rooliID),
+    karhuID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE,
+    rooliID INTEGER REFERENCES Rooli(rooliID) ON DELETE CASCADE,
     PRIMARY KEY (karhuID, rooliID)
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE Tulos(
 
 CREATE TABLE Osallistuminen(
     keikkaID INTEGER REFERENCES Keikka(keikkaID),
-    karhuID INTEGER REFERENCES Karhu(karhuID),
+    karhuID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE,
     rooliID INTEGER REFERENCES Rooli(rooliID),
     PRIMARY KEY (keikkaID, karhuID)
 );

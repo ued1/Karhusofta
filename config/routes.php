@@ -24,6 +24,10 @@ $routes->post('/karhut/:karhuid/muokkaa', function($karhuid) {
     KarhuController::paivita($karhuid);
 });
 
+$routes->post('/karhut/:karhuid/poista', function($karhuid) {
+    KarhuController::poista($karhuid);
+});
+
 $routes->get('/karhut/:karhuid', function($karhuid) {
     KarhuController::nayta($karhuid);
 });

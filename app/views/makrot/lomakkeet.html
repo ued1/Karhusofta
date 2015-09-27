@@ -1,0 +1,5 @@
+{% macro poista_nappi(polku, nappi_teksti) %}
+<form method="post" action="{{polku}}" style="display: inline-block;">
+    <button type="submit" class="btn btn-danger">{{nappi_teksti|default('Poista')}}</button>
+</form>
+{% endmacro %}

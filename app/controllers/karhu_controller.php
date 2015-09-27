@@ -55,6 +55,17 @@ class KarhuController extends BaseController {
         }
     }
     
+    public static function poista($karhuid) {
+        $karhu = new Karhu(array('karhuid' => $karhuid));
+        if($karhu->voiko_poistaa()) {
+            $karhu->poista();
+            Redirect::to('/karhut', array('viesti' => 'Karhu poistettu onnistuneesti!'));
+        } else {
+            $alkuperainen_karhu = Karhu::etsi($karhuid);
+            View::make('karhu/karhu.html', array('karhu' => $alkuperainen_karhu, 'virhe' => 'Karhua ei voi poistaa, koska se on ryhmänjohtajana meneillään olevassa keikassa.'));
+        }
+    }
+    
     
     
 }

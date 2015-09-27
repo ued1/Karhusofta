@@ -66,6 +66,22 @@ class Karhu extends BaseModel {
         $kysely = DB::connection()->prepare('UPDATE Karhu SET nimi = :nimi, salasana = :salasana WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $this->karhuid, 'nimi' => $this->nimi, 'salasana' => $this->salasana));
     }
+    
+    public function voiko_poistaa() {
+        // karhun voi poistaa, jos hän ei ole meneillään olevalla keikalla ryhmänjohtajana
+        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $this->karhuid));
+        $rivi = $kysely->fetch();
+        if($rivi) {
+            return FALSE;
+        }
+        return TRUE;
+    }
+    
+    public function poista() {
+        $kysely = DB::connection()->prepare('DELETE FROM Karhu WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $this->karhuid));
+    }
 
     public function validoi_nimen_pituus() {
         $virheet = array();

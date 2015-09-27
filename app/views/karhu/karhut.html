@@ -1,7 +1,14 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
 {% extends "base.html" %}
 {% block content %}
 
 <h2>Karhut</h2>
+
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
 
 <p>
     <a href="{{base_path}}/karhut/uusi" class="btn btn-primary">Uusi karhu</a>

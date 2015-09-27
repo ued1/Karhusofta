@@ -1,9 +1,18 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
 {% extends "base.html" %}
 {% block content %}
 
+{% if viesti %}
 <div class="alert alert-success">
     {{viesti}}
 </div>
+{% endif %}
+
+{% if virhe %}
+<div class="alert alert-danger">
+    {{virhe}}
+</div>
+{% endif %}
 
 <h2>Karhu: {{karhu.nimi}}</h2>
 
@@ -20,7 +29,7 @@
 {% endif %}
 </p>
 <p>
-    <a href="#" class="btn btn-danger">Poista</a>
+    {{lomakkeet.poista_nappi("#{base_path}/karhut/#{karhu.karhuid}/poista")}}
     <a href="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa" class="btn btn-default">Muokkaa</a>
 </p>
 

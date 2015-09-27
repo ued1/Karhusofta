@@ -1,3 +1,4 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
 {% extends "base.html" %}
 {% block content %}
 
@@ -21,12 +22,8 @@
 <p><strong>Kuvaus:</strong> {{kohde.kuvaus}}</p>
 <p><strong>Arvio saaliista:</strong> {{kohde.arvo}}</p>
 
-
-<form method="post" action="{{base_path}}/kohteet/{{kohde.kohdeid}}/poista" style="display: inline-block;">
-    <button type="submit" class="btn btn-danger">Poista</button>
-</form>
-
 <p>
+    {{lomakkeet.poista_nappi("#{base_path}/kohteet/#{kohde.kohdeid}/poista")}}
     <a href="{{base_path}}/kohteet/{{kohde.kohdeid}}/muokkaa" class="btn btn-default">Muokkaa</a>
 </p>
 

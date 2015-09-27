@@ -87,5 +87,4 @@ class KarhuController extends BaseController {
             View::make('karhu/karhu.html', array('karhu' => $alkuperainen_karhu, 'virhe' => 'Karhua ei voi poistaa, koska se on ryhmänjohtajana meneillään olevassa keikassa.'));
         }
     }
-
 }

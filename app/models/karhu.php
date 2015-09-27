@@ -115,5 +115,4 @@ class Karhu extends BaseModel {
         }
         return $virheet;
     }
-
 }

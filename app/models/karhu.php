@@ -38,6 +38,7 @@ class Karhu extends BaseModel {
             $karhu = new Karhu(array(
                 'karhuid' => $rivi['karhuid'],
                 'nimi' => $rivi['nimi'],
+                'salasana' => $rivi['salasana'],
                 'saldo' => $rivi['saldo'],
                 'pvm' => $rivi['pvm'],
                 'taidot' => $t

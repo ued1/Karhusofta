@@ -53,7 +53,15 @@ $routes->post('/keikat', 'tarkista_onko_kirjautunut', function() {
 });
 
 $routes->get('/keikat/uusi', 'tarkista_onko_kirjautunut', function() {
-    KeikkaController::uusi();
+    KeikkaController::uusi(null);
+});
+
+$routes->get('/keikat/uusi/:kohdeid', 'tarkista_onko_kirjautunut', function($kohdeid) {
+    KeikkaController::uusi($kohdeid);
+});
+
+$routes->get('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::ilmoittaudu($keikkaid);
 });
 
 $routes->get('/keikat/:keikkaid', 'tarkista_onko_kirjautunut', function($keikkaid) {

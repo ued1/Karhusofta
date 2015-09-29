@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
+
+{% if virhe %}
+<div class="alert alert-danger">
+    {{virhe}}
+</div>
+{% endif %}
+
 <h2>Keikat</h2>
 
 <p>
@@ -14,8 +26,7 @@
             <th>Kohteen nimi</th>
             <th>Arvio saaliista</th>
             <th>Ilmoittautuneita</th>
-            <th>Paikkoja jäljellä</th>
-            <th></th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -24,9 +35,14 @@
                 <td><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></td>
                 <td><a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></td>
                 <td>{{keikka.kohdearvo}}</td>
-                <td>--luku--</td>
-                <td>--luku--</td>
-                <td><a class="btn btn-default btn-sm" href="#">Ilmoittaudu</a></td>
+                <td>{{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</td>
+                {% if keikka.kayttaja_keikalla == true %}
+                <td><a class="btn btn-default btn-sm" href="#">Peru ilmoittautuminen</a></td>
+                {% elseif (keikka.ilmoittautuneita) >= (keikka.osallistujamaara) %}
+                <td>Odottaa alkamista</td>
+                {% else %}
+                <td><a class="btn btn-default btn-sm" href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu">Ilmoittaudu</a></td>
+                {% endif %}
         </tr>
         {% endfor %}
     </tbody>

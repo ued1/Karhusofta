@@ -3,14 +3,27 @@
 class KeikkaController extends BaseController {
 
     public static function index() {
-        $keikat = Keikka::kaikki();
-        View::make('keikka/keikat.html', array('keikat' => $keikat));
+        self::listaa_keikat(null, null);
     }
-
-    public static function uusi() {
+    
+    public static function listaa_keikat($viesti, $virhe) {
+        $keikat = Keikka::kaikki();
+        foreach($keikat as $keikka) {
+            $keikka->lisaa_ilmoittautumistieto();
+            $keikka->lisaa_oma_ilmoittautumistieto($_SESSION['karhuid']);
+        }
+        View::make('keikka/keikat.html', array('keikat' => $keikat, 'viesti' => $viesti, 'virhe' => $virhe));
+    }
+    
+    public static function uusi($kohdeid) {
         $kohteet = Kohde::kaikki();
         $karhut = Karhu::kaikki();
-        View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut));
+        if($kohdeid) {
+            $valittu_kohde = Kohde::etsi($kohdeid);
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'valittu_kohde' => $valittu_kohde));
+        } else {
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut));
+        }
     }
 
     public static function nayta($keikkaid) {
@@ -41,6 +54,19 @@ class KeikkaController extends BaseController {
             $valittu_karhu = Karhu::etsi($valittu_karhuid);
             View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'virheet' => $virheet, 'attribuutit' => $attribuutit, 'valittu_kohde' => $valittu_kohde, 'valittu_karhu' => $valittu_karhu));
         }
+    }
+    
+    public static function ilmoittaudu($keikkaid) {
+        $keikka = Keikka::etsi($keikkaid);
+        $karhuid = $_SESSION['karhuid'];
+        if(Karhu::onko_karhu_keikalla($karhuid, $keikkaid)) {
+            self::listaa_keikat(null, 'Et voi ilmoittautua uudestaan samalle keikalle!');
+        } elseif($keikka->onko_keikalla_tilaa()) {
+            Keikka::ilmoittaudu($keikkaid, $karhuid);
+            self::listaa_keikat('Ilmoittautuminen lisätty!', null);
+        } else {
+            self::listaa_keikat(null, 'Keikalle ei mahdu enempää, se on täynnä!');
+        }   
     }
 
 }

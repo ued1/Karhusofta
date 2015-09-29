@@ -3,7 +3,13 @@
 class EtusivuController extends BaseController {
     
     public static function index() {
-        View::make('etusivu.html');
+        $keikat = array();
+        if($_SESSION['karhuid']) {
+            $keikat = Karhu::karhun_keikat($_SESSION['karhuid']);
+            View::make('etusivu.html', array('keikat' => $keikat));
+        } else {
+            View::make('etusivu.html');
+        }
     }
     
     public static function kirjaudu() {

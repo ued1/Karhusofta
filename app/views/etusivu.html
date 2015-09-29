@@ -33,12 +33,16 @@
     {% if not viesti %}
     <div class="alert alert-success">Olet kirjautunut sisään.</div>
     {% endif %}
-    <ul>
-            <li><a href="{{base_path}}/karhut">Karhut</a></li>
-            <li><a href="{{base_path}}/keikat">Keikat</a></li>
-            <li><a href="{{base_path}}/kohteet">Kohteet</a></li>
-            <li><a href="{{base_path}}/tilasto">Tilasto</a></li>
-    </ul>
+    
+    {% if keikat %}
+        <h4>Keikat, joille olet ilmoittautunut</h4>
+        <ul>
+        {% for keikka in keikat %}
+            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    
     <br>
     <form method="post" action="{{base_path}}/poistu" style="display: inline-block;">
         <button type="submit" class="btn btn-default">Kirjaudu ulos</button>

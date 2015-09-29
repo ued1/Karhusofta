@@ -2,7 +2,7 @@
 
 class Keikka extends BaseModel {
 
-    public $keikkaid, $nimi, $osallistujamaara, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi;
+    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
@@ -100,6 +100,53 @@ class Keikka extends BaseModel {
         }
         return $virheet;
     }
+    
+    public function onko_keikalla_tilaa() {
+        if($this->osallistujamaara > self::osallistujia($this->keikkaid)) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+    
+    public static function osallistujia($keikkaid) {
+        $kysely = DB::connection()->prepare('SELECT count(*) FROM Osallistuminen WHERE keikkaid = :keikkaid');
+        $kysely->execute(array('keikkaid' => $keikkaid));
+        $rivi = $kysely->fetch();
+        return $rivi[0];
+    }
+    
+    public function lisaa_ilmoittautumistieto() {
+        $this->ilmoittautuneita = self::osallistujia($this->keikkaid);
+    }
+    
+    public function lisaa_oma_ilmoittautumistieto($karhuid) {
+        if(Karhu::onko_karhu_keikalla($karhuid, $this->keikkaid)) {
+            $this->kayttaja_keikalla = TRUE;
+        } else {
+            $this->kayttaja_keikalla = FALSE;
+        }
+    }
+    
+    
+    public static function osallistujat($keikkaid) {
+        $kysely = DB::connection()->prepare('SELECT karhuid from Osallistuminen WHERE keikkaid = :keikkaid');
+        $kysely->execute(array('keikkaid' => $keikkaid));
+        $rivit = $kysely->fetchAll();
+        $osallistujat = array();
+
+        foreach ($rivit as $rivi) {
+            $karhu = Karhu::etsi($rivi['karhuid']);
+            $osallistujat[] = $karhu;
+        }
+        return $osallistujat;
+    }
+    
+    public static function ilmoittaudu($keikkaid, $karhuid) {
+        $kysely = DB::connection()->prepare('INSERT INTO Osallistuminen (keikkaid, karhuid) VALUES (:keikkaid, :karhuid)');
+        $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
+    }
+    
+    
         
 
 }

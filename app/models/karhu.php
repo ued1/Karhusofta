@@ -115,4 +115,27 @@ class Karhu extends BaseModel {
         }
         return $virheet;
     }
+    
+    public static function onko_karhu_keikalla($karhuid, $keikkaid) {
+        $kysely = DB::connection()->prepare('SELECT keikkaid FROM Osallistuminen WHERE keikkaid = :keikkaid AND karhuid = :karhuid LIMIT 1');
+        $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
+        $rivi = $kysely->fetch();
+        if($rivi) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+    
+    public static function karhun_keikat($karhuid) {
+        $kysely = DB::connection()->prepare('SELECT keikkaid FROM Osallistuminen WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $karhuid));
+        $rivit = $kysely->fetchAll();
+        $keikat = array();
+
+        foreach ($rivit as $rivi) {
+            $keikat[] = Keikka::etsi($rivi['keikkaid']);
+        }
+        return $keikat;
+    }
+    
 }

@@ -45,7 +45,11 @@ $routes->get('/karhut/:karhuid', 'tarkista_onko_kirjautunut', function($karhuid)
 });
 
 $routes->get('/keikat', 'tarkista_onko_kirjautunut', function() {
-    KeikkaController::index();
+    KeikkaController::index(null, null);
+});
+
+$routes->get('/keikat', 'tarkista_onko_kirjautunut', function($viesti, $virhe) {
+    KeikkaController::index($viesti, $virhe);
 });
 
 $routes->post('/keikat', 'tarkista_onko_kirjautunut', function() {
@@ -62,6 +66,10 @@ $routes->get('/keikat/uusi/:kohdeid', 'tarkista_onko_kirjautunut', function($koh
 
 $routes->get('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::ilmoittaudu($keikkaid);
+});
+
+$routes->get('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::peru_ilmoittautuminen($keikkaid);
 });
 
 $routes->get('/keikat/:keikkaid', 'tarkista_onko_kirjautunut', function($keikkaid) {

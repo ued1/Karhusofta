@@ -36,12 +36,12 @@
                 <td><a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></td>
                 <td>{{keikka.kohdearvo}}</td>
                 <td>{{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</td>
-                {% if keikka.kayttaja_keikalla == true %}
-                <td><a class="btn btn-default btn-sm" href="#">Peru ilmoittautuminen</a></td>
-                {% elseif (keikka.ilmoittautuneita) >= (keikka.osallistujamaara) %}
-                <td>Odottaa alkamista</td>
+                {% if (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
+                    <td>Odottaa alkamista</td>
+                {% elseif keikka.kayttaja_keikalla == true %}
+                    <td><a class="btn btn-default btn-sm" href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittautuminen/peru">Peru ilmoittautuminen</a></td>
                 {% else %}
-                <td><a class="btn btn-default btn-sm" href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu">Ilmoittaudu</a></td>
+                    <td><a class="btn btn-default btn-sm" href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu">Ilmoittaudu</a></td>
                 {% endif %}
         </tr>
         {% endfor %}

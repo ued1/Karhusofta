@@ -2,11 +2,7 @@
 
 class KeikkaController extends BaseController {
 
-    public static function index() {
-        self::listaa_keikat(null, null);
-    }
-    
-    public static function listaa_keikat($viesti, $virhe) {
+    public static function index($viesti, $virhe) {
         $keikat = Keikka::kaikki();
         foreach($keikat as $keikka) {
             $keikka->lisaa_ilmoittautumistieto();
@@ -60,13 +56,25 @@ class KeikkaController extends BaseController {
         $keikka = Keikka::etsi($keikkaid);
         $karhuid = $_SESSION['karhuid'];
         if(Karhu::onko_karhu_keikalla($karhuid, $keikkaid)) {
-            self::listaa_keikat(null, 'Et voi ilmoittautua uudestaan samalle keikalle!');
+            Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Et voi ilmoittautua uudestaan samalle keikalle!'));
         } elseif($keikka->onko_keikalla_tilaa()) {
             Keikka::ilmoittaudu($keikkaid, $karhuid);
-            self::listaa_keikat('Ilmoittautuminen lisätty!', null);
+            Redirect::to('/keikat', array('viesti' => 'Ilmoittautuminen lisätty!', 'virhe' => null));
         } else {
-            self::listaa_keikat(null, 'Keikalle ei mahdu enempää, se on täynnä!');
+            Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Keikalle ei mahdu enempää, se on täynnä!'));
         }   
+    }
+    
+    public static function peru_ilmoittautuminen($keikkaid) {
+        $keikka = Keikka::etsi($keikkaid);
+        $karhuid = $_SESSION['karhuid'];
+        if(Karhu::onko_karhu_keikalla($karhuid, $keikkaid)) {
+            Keikka::peru_osallistuminen($keikkaid, $karhuid);
+            Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Ilmoittautuminen peruttu!'));
+        } else {
+            Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Et voi perua ilmoittautumista koska et ole kyseisellä keikalla!'));
+        }
+        
     }
 
 }

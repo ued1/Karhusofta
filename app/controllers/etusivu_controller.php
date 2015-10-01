@@ -4,7 +4,7 @@ class EtusivuController extends BaseController {
     
     public static function index() {
         $keikat = array();
-        if($_SESSION['karhuid']) {
+        if(isset($_SESSION['karhuid'])) {
             $keikat = Karhu::karhun_keikat($_SESSION['karhuid']);
             View::make('etusivu.html', array('keikat' => $keikat));
         } else {

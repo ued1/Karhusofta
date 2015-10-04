@@ -26,6 +26,7 @@ class EtusivuController extends BaseController {
     
     public static function poistu() {
         $_SESSION['karhuid'] = null;
+        $_SESSION['nimi'] = null;
         Redirect::to('/', array('viesti' => 'Olet kirjautunut ulos!'));
     }
     

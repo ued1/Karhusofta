@@ -14,11 +14,12 @@ class KeikkaController extends BaseController {
     public static function uusi($kohdeid) {
         $kohteet = Kohde::kaikki();
         $karhut = Karhu::kaikki();
+        $roolit = Rooli::kaikki();
         if($kohdeid) {
             $valittu_kohde = Kohde::etsi($kohdeid);
-            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'valittu_kohde' => $valittu_kohde));
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'valittu_kohde' => $valittu_kohde, 'roolit' => $roolit));
         } else {
-            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut));
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'roolit' => $roolit));
         }
     }
 
@@ -31,6 +32,15 @@ class KeikkaController extends BaseController {
         $parametrit = $_POST;
         $valittu_kohdeid = $parametrit['kohde'];
         $valittu_karhuid = $parametrit['karhu'];
+        $roolit = Rooli::kaikki();
+        
+        $rosvoporukka = null;
+        
+        foreach($roolit as $rooli) {
+            $rosvoporukka[] = array(
+                'tehtava' => $rooli->nimi,
+                'lukumaara' => $parametrit[$rooli->nimi]);
+        }
         
         $attribuutit = array(
             'nimi' => $parametrit['nimi'],
@@ -38,7 +48,9 @@ class KeikkaController extends BaseController {
             'kohdeid' => $valittu_kohdeid,
             'karhuid' => $valittu_karhuid
         );
+                        
         $keikka = new Keikka($attribuutit);
+        
         $virheet = $keikka->virheet();
         if (count($virheet) == 0) {
             $keikka->tallenna();
@@ -48,7 +60,7 @@ class KeikkaController extends BaseController {
             $karhut = Karhu::kaikki();
             $valittu_kohde = Kohde::etsi($valittu_kohdeid);
             $valittu_karhu = Karhu::etsi($valittu_karhuid);
-            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'virheet' => $virheet, 'attribuutit' => $attribuutit, 'valittu_kohde' => $valittu_kohde, 'valittu_karhu' => $valittu_karhu));
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'virheet' => $virheet, 'attribuutit' => $attribuutit, 'valittu_kohde' => $valittu_kohde, 'valittu_karhu' => $valittu_karhu, 'roolit' => $roolit, 'rosvoporukka' => $rosvoporukka));
         }
     }
     

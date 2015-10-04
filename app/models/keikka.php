@@ -2,11 +2,11 @@
 
 class Keikka extends BaseModel {
 
-    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi;
+    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi, $rosvoporukka;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validoi_nimi', 'validoi_osallistujamaara', 'validoi_valinnat');
+        $this->validators = array('validoi_nimi', 'validoi_osallistujamaara', 'validoi_valinnat', 'tarkista_osallistujat');
     }
 
     public static function kaikki() {
@@ -100,7 +100,17 @@ class Keikka extends BaseModel {
         }
         return $virheet;
     }
-
+    
+    public function tarkista_osallistujat() {
+        $virheet = array();
+        if ($this->rosvoporukka != null) {
+            
+            
+            
+        }
+        return $virheet;
+    }
+    
     public function onko_keikalla_tilaa() {
         if ($this->osallistujamaara > self::osallistujia($this->keikkaid)) {
             return TRUE;
@@ -114,6 +124,10 @@ class Keikka extends BaseModel {
         $rivi = $kysely->fetch();
         return $rivi[0];
     }
+    
+    public function aseta_rosvoporukka($rosvoporukka) {
+        $this->rosvoporukka = $rosvoporukka;
+    }
 
     public function lisaa_ilmoittautumistieto() {
         $this->ilmoittautuneita = self::osallistujia($this->keikkaid);
@@ -126,7 +140,7 @@ class Keikka extends BaseModel {
             $this->kayttaja_keikalla = FALSE;
         }
     }
-
+    
     public static function osallistujat($keikkaid) {
         $kysely = DB::connection()->prepare('SELECT karhuid from Osallistuminen WHERE keikkaid = :keikkaid');
         $kysely->execute(array('keikkaid' => $keikkaid));

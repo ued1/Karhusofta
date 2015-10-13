@@ -4,6 +4,10 @@ function tarkista_onko_kirjautunut() {
     BaseController::check_logged_in();
 }
 
+function tarkista_onko_admin() {
+    BaseController::check_admin();
+}
+
 $routes->get('/', function() {
     EtusivuController::index();
 });
@@ -14,6 +18,14 @@ $routes->post('/kirjaudu', function() {
 
 $routes->post('/poistu', function() {
     EtusivuController::poistu();
+});
+
+$routes->get('/chat', function() {
+    ChatController::index();
+});
+
+$routes->post('/chat', function() {
+    ChatController::uusi();
 });
 
 $routes->get('/karhut', 'tarkista_onko_kirjautunut', function() {
@@ -74,6 +86,34 @@ $routes->get('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautun
 
 $routes->get('/keikat/:keikkaid', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::nayta($keikkaid);
+});
+
+$routes->get('/roolit', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
+    RooliController::index();
+});
+
+$routes->get('/roolit/uusi', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
+    RooliController::uusi();
+});
+
+$routes->post('/roolit', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
+    RooliController::lisaa();
+});
+
+$routes->get('/roolit/:rooliid/muokkaa', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($rooliid) {
+    RooliController::muokkaa($rooliid);
+});
+
+$routes->post('/roolit/:rooliid/muokkaa', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($rooliid) {
+    RooliController::paivita($rooliid);
+});
+
+$routes->post('/roolit/:rooliid/poista', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($rooliid) {
+    RooliController::poista($rooliid);
+});
+
+$routes->get('/roolit/:roolitid', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($rooliid) {
+    RooliController::nayta($rooliid);
 });
 
 $routes->get('/kohteet', 'tarkista_onko_kirjautunut', function() {

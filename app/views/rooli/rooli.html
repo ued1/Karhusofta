@@ -1,0 +1,31 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
+{% extends "base.html" %}
+{% block content %}
+
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
+
+{% if virhe %}
+<div class="alert alert-danger">
+    {{virhe}}
+</div>
+{% endif %}
+
+<h2>Rooli: {{rooli.nimi}}</h2>
+
+<p><strong>Kuvaus:</strong> {{rooli.kuvaus}}</p>
+<p><strong>Vaativuuskerroin:</strong> {{rooli.vaativuuskerroin}}</p>
+
+<p>
+    {{lomakkeet.poista_nappi("#{base_path}/roolit/#{rooli.rooliid}/poista")}}
+    <a href="{{base_path}}/roolit/{{rooli.rooliid}}/muokkaa" class="btn btn-default">Muokkaa</a>
+</p>
+
+<p>
+    <a href="{{base_path}}/roolit" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

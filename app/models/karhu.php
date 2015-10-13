@@ -2,7 +2,7 @@
 
 class Karhu extends BaseModel {
 
-    public $karhuid, $salasana, $nimi, $saldo, $pvm, $taidot;
+    public $karhuid, $salasana, $nimi, $saldo, $pvm, $taidot, $admin;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
@@ -22,7 +22,8 @@ class Karhu extends BaseModel {
                 'nimi' => $rivi['nimi'],
                 'saldo' => $rivi['saldo'],
                 'pvm' => $rivi['pvm'],
-                'taidot' => $t
+                'taidot' => $t,
+                'admin' => $rivi['admin']
             ));
         }
         return $karhut;
@@ -41,7 +42,8 @@ class Karhu extends BaseModel {
                 'salasana' => $rivi['salasana'],
                 'saldo' => $rivi['saldo'],
                 'pvm' => $rivi['pvm'],
-                'taidot' => $t
+                'taidot' => $t,
+                'admin' => $rivi['admin']
             ));
 
             return $karhu;

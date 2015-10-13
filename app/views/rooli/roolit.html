@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Roolit</h2>
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
+
+<p>
+    <a href="{{base_path}}/roolit/uusi" class="btn btn-primary">Uusi rooli</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Roolin nimi</th>
+            <th>Kuvaus</th>
+            <th>Vaativuuskerroin</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rooli in roolit %}
+            <tr>
+                <td><a href="{{base_path}}/roolit/{{rooli.rooliid}}">{{rooli.nimi}}</a></td>
+                <td>{{rooli.kuvaus}}</td>
+                <td>{{rooli.vaativuuskerroin}}</td>
+                <td><a class="btn btn-default btn-sm" href="{{base_path}}/roolit/{{rooli.rooliid}}/muokkaa">Muokkaa</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% import "makrot/virheet.html" as virheet_makro  %}
+{% extends "base.html" %}
+{% block content %}
+
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
+
+{% if virheet %}
+    {{virheet_makro.listaa_virheet(virheet)}}
+{% endif %}
+
+
+<form class="form-inline" method="post" action="{{base_path}}/chat">
+    <div class="form-group">
+        <label for="viestikentta">Viesti: </label>
+        <input type="text" class="form-control" name="viesti" id="viestikentta" placeholder="Kirjoita viesti">
+    </div>
+    <button type="submit" class="btn btn-default">Lähetä</button>
+</form>
+
+{% for viesti in viestit %}
+<div class="panel panel-default">
+  
+    <div class="panel-heading">{{viesti.aika}} - {{viesti.lahettaja}}: <strong>{{viesti.viesti}}</strong></div>
+  
+</div>
+{% endfor %}
+
+{% endblock %}

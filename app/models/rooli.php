@@ -2,10 +2,11 @@
 
 class Rooli extends BaseModel {
 
-    public $rooliid, $nimi, $kuvaus, $vaativuuskerroin;
+    public $rooliid, $nimi, $kuvaus, $vaativuuskerroin, $poistettavissa;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validoi_nimi', 'validoi_kuvaus', 'validoi_vaativuuskerroin');
     }
 
     public static function kaikki() {
@@ -30,16 +31,34 @@ class Rooli extends BaseModel {
         $kysely->execute(array('rooliid' => $rooliid));
         $rivi = $kysely->fetch();
 
-        if ($row) {
+        if ($rivi) {
             $rooli = new Rooli(array(
                 'rooliid' => $rivi['rooliid'],
                 'nimi' => $rivi['nimi'],
                 'kuvaus' => $rivi['kuvaus'],
-                'vaativuuskerroin' => $rivi['vaativuuskerroin']
+                'vaativuuskerroin' => $rivi['vaativuuskerroin'],
+                'poistettavissa' => $rivi['poistettavissa']
             ));
             return $rooli;
         }
         return null;
+    }
+    
+    public function tallenna() {
+        $kysely = DB::connection()->prepare('INSERT INTO Rooli (nimi, kuvaus, vaativuuskerroin) VALUES (:nimi, :kuvaus, :vaativuuskerroin) RETURNING rooliid');
+        $kysely->execute(array('nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin));
+        $rivi = $kysely->fetch();
+        $this->rooliid = $rivi['rooliid'];
+    }
+    
+    public function paivita() {
+        $kysely = DB::connection()->prepare('UPDATE Rooli SET nimi = :nimi, kuvaus = :kuvaus, vaativuuskerroin = :vaativuuskerroin WHERE rooliid = :rooliid');
+        $kysely->execute(array('rooliid' => $this->rooliid, 'nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin));
+    }
+    
+    public function poista() {
+        $kysely = DB::connection()->prepare('DELETE FROM Rooli WHERE rooliid = :rooliid');
+        $kysely->execute(array('rooliid' => $this->rooliid));
     }
 
     public static function karhun_taidot($karhuid) {
@@ -68,6 +87,38 @@ class Rooli extends BaseModel {
         $kysely = DB::connection()->prepare('DELETE FROM Osaaminen WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $karhuid));
         self::lisaa_karhulle_roolit($karhuid, $roolit);
+    }
+    
+    public function validoi_nimi() {
+        $virheet = array();
+        if (is_numeric($this->nimi)) {
+            $virheet[] = 'Roolin nimenä ei voi olla numero!';
+        } elseif ($this->nimi == '' || !$this->merkkijono_tarpeeksi_pitka($this->nimi, 4) || !$this->merkkijono_tarpeeksi_lyhyt($this->nimi, 20)) {
+            $virheet[] = 'Roolin nimen tulee olla 4-20 merkkiä pitkä!';
+        }
+        return $virheet;
+    }
+
+    public function validoi_vaativuuskerroin() {
+        $virheet = array();
+        if ($this->vaativuuskerroin == '') {
+            $virheet[] = 'Vaativuuskerroin ei voi olla tyhjä!';
+        } elseif (!is_numeric($this->vaativuuskerroin) || !ctype_digit($this->vaativuuskerroin)) {
+            $virheet[] = 'Vaativuuskertoimen tulee olla positiivinen kokonaisluvu, joka on vähintään 1 ja enintään 10.';
+        } elseif ($this->vaativuuskerroin < 1 || $this->vaativuuskerroin > 10) {
+            $virheet[] = 'Vaativuuskertoimen tulee olla vähintään 1 ja enintään 10!';
+        }
+        return $virheet;
+    }
+
+    public function validoi_kuvaus() {
+        $virheet = array();
+        if (is_numeric($this->kuvaus)) {
+            $virheet[] = 'Kuvaus ei voi olla pelkästään numeerinen!';
+        } elseif (!$this->merkkijono_tarpeeksi_lyhyt($this->kuvaus, 500)) {
+            $virheet[] = 'Kuvaus voi olla korkeintaan 120 merkkiä pitkä!';
+        }
+        return $virheet;
     }
 
 }

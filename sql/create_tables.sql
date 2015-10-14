@@ -52,10 +52,20 @@ CREATE TABLE Osallistuminen(
     PRIMARY KEY (keikkaID, karhuID)
 );
 
-CREATE TABLE Viesti(
-    viestiID SERIAL PRIMARY KEY,
+CREATE TABLE Chat(
+    chatviestiID SERIAL PRIMARY KEY,
     aika TIMESTAMP NOT NULL,
     viesti varchar(320) NOT NULL,
     karhuID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE
+);
+
+CREATE TABLE Viesti(
+    viestiID SERIAL PRIMARY KEY,
+    lahetysaika TIMESTAMP NOT NULL,
+    lukemisaika TIMESTAMP DEFAULT NULL,
+    lahettajaID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE,
+    saajaID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE,
+    otsikko varchar(30),
+    viesti varchar(500)
 );
 

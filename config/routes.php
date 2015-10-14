@@ -20,12 +20,36 @@ $routes->post('/poistu', function() {
     EtusivuController::poistu();
 });
 
-$routes->get('/chat', function() {
+$routes->get('/chat', 'tarkista_onko_kirjautunut', function() {
     ChatController::index();
 });
 
-$routes->post('/chat', function() {
+$routes->post('/chat', 'tarkista_onko_kirjautunut', function() {
     ChatController::uusi();
+});
+
+$routes->get('/viestit', 'tarkista_onko_kirjautunut', function() {
+    ViestiController::index();
+});
+
+$routes->get('/viestit/uusi', 'tarkista_onko_kirjautunut', function() {
+    ViestiController::uusi();
+});
+
+$routes->post('/viestit', 'tarkista_onko_kirjautunut', function() {
+    ViestiController::laheta();
+});
+
+$routes->post('/viestit/:viestiid/poista', 'tarkista_onko_kirjautunut', function($viestiid) {
+    ViestiController::poista($viestiid);
+});
+
+$routes->get('/viestit/:viestiid/vastaa', 'tarkista_onko_kirjautunut', function($viestiid) {
+    ViestiController::vastaa($viestiid);
+});
+
+$routes->get('/viestit/:viestiid', 'tarkista_onko_kirjautunut', function($viestiid) {
+    ViestiController::nayta($viestiid);
 });
 
 $routes->get('/karhut', 'tarkista_onko_kirjautunut', function() {
@@ -76,11 +100,11 @@ $routes->get('/keikat/uusi/:kohdeid', 'tarkista_onko_kirjautunut', function($koh
     KeikkaController::uusi($kohdeid);
 });
 
-$routes->get('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
+$routes->post('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::ilmoittaudu($keikkaid);
 });
 
-$routes->get('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautunut', function($keikkaid) {
+$routes->post('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::peru_ilmoittautuminen($keikkaid);
 });
 

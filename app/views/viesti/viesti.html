@@ -1,0 +1,35 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
+{% extends "base.html" %}
+{% block content %}
+
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
+
+{% if virhe %}
+<div class="alert alert-danger">
+    {{virhe}}
+</div>
+{% endif %}
+<p>Päiväys: {{uusiviesti.lahetysaika}}</p>
+<p>Lähettäjä: {{uusiviesti.lahettajanimi}}</p>
+<p>Vastaanottaja: {{uusiviesti.saajanimi}}</p>
+<p>Otsikko: {{uusiviesti.otsikko}}</p>
+<p><br><strong>{{uusiviesti.viesti}}</strong><br><br></p>
+{% if user_logged_in.karhuid == uusiviesti.saajaid %}
+<p>
+    {{lomakkeet.poista_nappi("#{base_path}/viestit/#{uusiviesti.viestiid}/poista")}}
+</p>
+<p>
+    <a href="{{base_path}}/viestit/{{uusiviesti.viestiid}}/vastaa" class="btn btn-default">Vastaa</a>
+</p>
+{% endif %}
+
+<p>
+    <a href="{{base_path}}/" class="btn btn-default">Etusivulle</a>
+    <a href="{{base_path}}/viestit" class="btn btn-default">Viesteihin</a>
+</p>
+
+{% endblock %}

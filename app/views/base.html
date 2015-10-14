@@ -52,6 +52,12 @@
             <li><a href="{{base_path}}/kohteet">Kohteet</a></li>
             <li><a href="{{base_path}}/tilasto">Tilasto</a></li>
             <li><a href="{{base_path}}/chat">Karhuchat</a></li>
+            {% if count_uudet_viestit %}
+                <li><a href="{{base_path}}/viestit">Viestit <span class="badge">{{count_uudet_viestit}}</span></a></li>
+            {% else %}
+                <li><a href="{{base_path}}/viestit">Viestit</a></li>
+            {% endif %}
+            
           </ul>
           
           <div class="navbar-right">

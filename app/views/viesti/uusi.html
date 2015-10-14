@@ -1,0 +1,48 @@
+{% import "makrot/virheet.html" as virheet_makro  %}
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Uusi viesti</h2>
+
+{% if virheet %}
+    {{virheet_makro.listaa_virheet(virheet)}}
+{% endif %}
+
+<form method="post" action="{{base_path}}/viestit">
+    <div class="form-group">
+        <label>Otsikko</label>
+        <input name="otsikko" class="form-control" value="{{attribuutit.otsikko}}" type="text">
+    </div>
+           
+    <div class="form-group">
+        <label>Vastaanottaja<br></label>
+        <select class="form-control" name="saajaid">
+            {% if not attribuutit.saajaid %}
+                <option value="0" selected="selected"> - Valitse vastaanottaja - </option>
+            {% else %}
+                <option value="{{attribuutit.saajaid}}" selected="selected">{{attribuutit.saajanimi}}</option> 
+            {% endif %}
+            
+            {% for karhu in karhut %}
+                {% if attribuutit.saajaid != karhu.karhuid and user_logged_in.karhuid != karhu.karhuid %}
+                    <option value="{{karhu.karhuid}}">{{karhu.nimi}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+        
+    <div class="form-group">
+        <label>Viesti</label>
+        <input name="viesti" class="form-control" value="{{attribuutit.viesti}}" type="text">
+    </div>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Lähetä</button>
+    </div>
+    
+</form>
+<p>
+    <a href="{{base_path}}/viestit" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

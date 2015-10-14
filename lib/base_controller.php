@@ -23,6 +23,12 @@
             Redirect::to('/', array('virhe' => 'Valitsemasi toiminto on vain admineille!'));
         }
     }
-        
-
+    
+    public static function count_uudet_viestit() {
+        if(isset($_SESSION['karhuid'])) {
+            $_SESSION['viesteja'] = Viesti::laske_uudet_viestit($_SESSION['karhuid']);
+        } else {
+            $_SESSION['viesteja'] = null;
+        }
+    }
   }

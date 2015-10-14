@@ -34,6 +34,19 @@
     <div class="alert alert-success">Olet kirjautunut sisään.</div>
     {% endif %}
     
+    {% if uudetviestit %}
+        {% if lkm == 1 %}
+            <h4>Sinulle on 1 uusi viesti:</h4>
+        {% else %}
+            <h4>Sinulle on {{lkm}} uutta viestejä:</h4>
+        {% endif %}
+        <ul>
+            {% for uusiviesti in uudetviestit %}
+                <li><a href="{{base_path}}/viestit/{{uusiviesti.viestiid}}">{{uusiviesti.lahetysaika}} {{uusiviesti.lahettajanimi}} --- {{uusiviesti.otsikko}}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
     {% if keikat %}
         <h4>Keikat, joille olet ilmoittautunut</h4>
         <ul>

@@ -1,0 +1,75 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
+{% extends "base.html" %}
+{% block content %}
+
+{% if viesti %}
+<div class="alert alert-success">
+    {{viesti}}
+</div>
+{% endif %}
+
+{% if virhe %}
+<div class="alert alert-danger">
+    {{virhe}}
+</div>
+{% endif %}
+
+<p>
+    <a href="{{base_path}}/viestit/uusi" class="btn btn-primary">Kirjoita uusi viesti</a>
+</p>
+
+<h2>Saapuneet viestit</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Otsikko</th>
+            <th>Lähettäjä</th>
+            <th>Päiväys</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for saapunut in saapuneet %}
+            <tr>
+                {% if saapunut.lukemisaika is null %}
+                    <td><a href="{{base_path}}/viestit/{{saapunut.viestiid}}"><strong>{{saapunut.otsikko}}</strong></a></td>
+                    <td><strong>{{saapunut.lahettajanimi}}</strong></td>
+                    <td><strong>{{saapunut.lahetysaika}}</strong></td>
+                    <td><span class="label label-info">Uusi</span></td>
+                {% else %}
+                    <td><a href="{{base_path}}/viestit/{{saapunut.viestiid}}">{{saapunut.otsikko}}</a></td>
+                    <td>{{saapunut.lahettajanimi}}</td>
+                    <td>{{saapunut.lahetysaika}}</td>
+                    <td>(Poista)</td>
+                {% endif %}
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Lähetetyt viestit</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Otsikko</th>
+            <th>Saaja</th>
+            <th>Päiväys</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lahetetty in lahetetyt %}
+            <tr>
+                    <td><a href="{{base_path}}/viestit/{{lahetetty.viestiid}}">{{lahetetty.otsikko}}</a></td>
+                    <td>{{lahetetty.saajanimi}}</td>
+                    <td>{{lahetetty.lahetysaika}}</td>
+                    <td>(Poista)</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -4,6 +4,7 @@ class KeikkaController extends BaseController {
 
     public static function index($viesti, $virhe) {
         $keikat = Keikka::kaikki();
+        self::count_uudet_viestit();
         foreach($keikat as $keikka) {
             $keikka->lisaa_ilmoittautumistieto();
             $keikka->lisaa_oma_ilmoittautumistieto($_SESSION['karhuid']);
@@ -82,7 +83,7 @@ class KeikkaController extends BaseController {
         $karhuid = $_SESSION['karhuid'];
         if(Karhu::onko_karhu_keikalla($karhuid, $keikkaid)) {
             Keikka::peru_osallistuminen($keikkaid, $karhuid);
-            Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Ilmoittautuminen peruttu!'));
+            Redirect::to('/keikat', array('viesti' => 'Ilmoittautuminen peruttu!', 'virhe' => null));
         } else {
             Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Et voi perua ilmoittautumista koska et ole kyseisellä keikalla!'));
         }

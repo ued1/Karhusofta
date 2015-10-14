@@ -4,9 +4,11 @@ class EtusivuController extends BaseController {
     
     public static function index() {
         $keikat = array();
+        self::count_uudet_viestit();
         if(isset($_SESSION['karhuid'])) {
             $keikat = Karhu::karhun_keikat($_SESSION['karhuid']);
-            View::make('etusivu.html', array('keikat' => $keikat));
+            $uudetviestit = Viesti::uudetviestit($_SESSION['karhuid']);
+            View::make('etusivu.html', array('keikat' => $keikat, 'uudetviestit' => $uudetviestit, 'lkm' => count($uudetviestit)));
         } else {
             View::make('etusivu.html');
         }

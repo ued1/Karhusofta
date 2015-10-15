@@ -2,11 +2,11 @@
 
 class Rooli extends BaseModel {
 
-    public $rooliid, $nimi, $kuvaus, $vaativuuskerroin, $poistettavissa;
+    public $rooliid, $nimi, $kuvaus, $vaativuuskerroin, $maksimimaara;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validoi_nimi', 'validoi_kuvaus', 'validoi_vaativuuskerroin');
+        $this->validators = array('validoi_nimi', 'validoi_kuvaus', 'validoi_vaativuuskerroin', 'validoi_maksimimaara');
     }
 
     public static function kaikki() {
@@ -20,7 +20,8 @@ class Rooli extends BaseModel {
                 'rooliid' => $rivi['rooliid'],
                 'nimi' => $rivi['nimi'],
                 'kuvaus' => $rivi['kuvaus'],
-                'vaativuuskerroin' => $rivi['vaativuuskerroin']
+                'vaativuuskerroin' => $rivi['vaativuuskerroin'],
+                'maksimimaara' => $rivi['maksimimaara']
             ));
         }
         return $roolit;
@@ -37,7 +38,7 @@ class Rooli extends BaseModel {
                 'nimi' => $rivi['nimi'],
                 'kuvaus' => $rivi['kuvaus'],
                 'vaativuuskerroin' => $rivi['vaativuuskerroin'],
-                'poistettavissa' => $rivi['poistettavissa']
+                'maksimimaara' => $rivi['maksimimaara']
             ));
             return $rooli;
         }
@@ -45,15 +46,15 @@ class Rooli extends BaseModel {
     }
     
     public function tallenna() {
-        $kysely = DB::connection()->prepare('INSERT INTO Rooli (nimi, kuvaus, vaativuuskerroin) VALUES (:nimi, :kuvaus, :vaativuuskerroin) RETURNING rooliid');
-        $kysely->execute(array('nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin));
+        $kysely = DB::connection()->prepare('INSERT INTO Rooli (nimi, kuvaus, vaativuuskerroin, maksimimaara) VALUES (:nimi, :kuvaus, :vaativuuskerroin, :maksimimaara) RETURNING rooliid');
+        $kysely->execute(array('nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin, 'maksimimaara' => $this->maksimimaara));
         $rivi = $kysely->fetch();
         $this->rooliid = $rivi['rooliid'];
     }
     
     public function paivita() {
-        $kysely = DB::connection()->prepare('UPDATE Rooli SET nimi = :nimi, kuvaus = :kuvaus, vaativuuskerroin = :vaativuuskerroin WHERE rooliid = :rooliid');
-        $kysely->execute(array('rooliid' => $this->rooliid, 'nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin));
+        $kysely = DB::connection()->prepare('UPDATE Rooli SET nimi = :nimi, kuvaus = :kuvaus, vaativuuskerroin = :vaativuuskerroin, maksimimaara = :maksimimaara WHERE rooliid = :rooliid');
+        $kysely->execute(array('rooliid' => $this->rooliid, 'nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin, 'maksimimaara' => $this->maksimimaara));
     }
     
     public function poista() {
@@ -107,6 +108,16 @@ class Rooli extends BaseModel {
             $virheet[] = 'Vaativuuskertoimen tulee olla positiivinen kokonaisluvu, joka on vähintään 1 ja enintään 10.';
         } elseif ($this->vaativuuskerroin < 1 || $this->vaativuuskerroin > 10) {
             $virheet[] = 'Vaativuuskertoimen tulee olla vähintään 1 ja enintään 10!';
+        }
+        return $virheet;
+    }
+    
+    public function validoi_maksimimaara() {
+        $virheet = array();
+        if ($this->vaativuuskerroin == '') {
+            $virheet[] = 'Maksimimäärä ei voi olla tyhjä!';
+        } elseif (!is_numeric($this->vaativuuskerroin) || !ctype_digit($this->vaativuuskerroin) || $this->vaativuuskerroin < 1) {
+            $virheet[] = 'Maksimimäärän tulee olla positiivinen kokonaisluvu, joka on vähintään 1.';
         }
         return $virheet;
     }

@@ -51,7 +51,7 @@ class KarhuController extends BaseController {
             View::make('karhu/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit, 'roolit' => $roolit, 'valitut_roolit' => $valitut_roolit));
         }
     }
-
+    
     public static function paivita($karhuid) {
         $parametrit = $_POST;
         $valitut_roolit = array();

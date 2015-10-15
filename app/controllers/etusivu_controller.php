@@ -8,7 +8,8 @@ class EtusivuController extends BaseController {
         if(isset($_SESSION['karhuid'])) {
             $keikat = Karhu::karhun_keikat($_SESSION['karhuid']);
             $uudetviestit = Viesti::uudetviestit($_SESSION['karhuid']);
-            View::make('etusivu.html', array('keikat' => $keikat, 'uudetviestit' => $uudetviestit, 'lkm' => count($uudetviestit)));
+            $johdettavat_keikat = Karhu::karhun_johdettavat_keikat($_SESSION['karhuid']);
+            View::make('etusivu.html', array('keikat' => $keikat, 'uudetviestit' => $uudetviestit, 'lkm' => count($uudetviestit), 'johdettavat_keikat' => $johdettavat_keikat));
         } else {
             View::make('etusivu.html');
         }

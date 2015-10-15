@@ -47,8 +47,17 @@
         </ul>
     {% endif %}
     
+    {% if johdettavat_keikat %}
+        <h4>Olet ryhmänjohtajana keikoilla:</h4>
+        <ul>
+        {% for keikka in johdettavat_keikat %}
+            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    
     {% if keikat %}
-        <h4>Keikat, joille olet ilmoittautunut</h4>
+        <h4>Olet ilmoittautunut keikoille:</h4>
         <ul>
         {% for keikka in keikat %}
             <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>

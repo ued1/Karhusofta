@@ -33,47 +33,14 @@
     </div>
         
     <div class="form-group">
-        <label>Osallistujamaara</label>
+        <label>Osallistujia (itsesi lisäksi)</label>
         <input name="osallistujamaara" class="form-control" value="{{attribuutit.osallistujamaara}}" type="text">
     </div>
-        
+    
     <div class="form-group">
-        <label>Vastuukarhu<br></label>
-        <select class="form-control" name="karhu">
-            {% if not valittu_karhu %}
-                <option value="0" selected="selected"> - Valitse karhu - </option>
-            {% else %}
-                <option value="{{valittu_karhu.karhuid}}" selected="selected">{{valittu_karhu.nimi}}</option>
-            {% endif %}
-            
-            {% for karhu in karhut %}
-                {% if valittu_karhu.karhuid != karhu.karhuid %}
-                    <option value="{{karhu.karhuid}}">{{karhu.nimi}}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
+        <p><strong>Luomalla uuden keikan toimit sen ryhmänjohtajana vastaten keikan toteutuksesta ja kirjaamisesta.<br>Tallentamalla hyväksyt tehtävän.</strong></p>
     </div>
-    <label><br>Valitse tarvittava määrä karhuja tehtäviin (arvot vain säilyvät, ei muuta merkitystä vielä)<br></label>
-    {% for rooli in roolit %}
-    <div class ="form-group">
-        <label>{{rooli.nimi}}</label>
-        <select class="form-control" name="{{rooli.nimi}}">
-            {% if rosvoporukka %}
-            {% for rosvo in rosvoporukka %}
-                {% if rosvo.lukumaara > 0 and rosvo.tehtava == rooli.nimi %}
-                    <option value="6" selected="selected">{{rosvo.lukumaara}}</option>
-                {% endif %}
-            {% endfor %}
-            {% endif %}
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-    </div>
-    {% endfor %}
+    
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Tallenna</button>
     </div>

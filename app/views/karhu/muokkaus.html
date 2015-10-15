@@ -8,7 +8,7 @@
     {{virheet_makro.listaa_virheet(virheet)}}
 {% endif %}
 
-<form method="post" action="{{base_path}}/karhut/{{attribuutit.karhuid}}/muokkaa">
+<form method="post" action="{{base_path}}/karhut/{{attribuutit.karhuid}}">
     <div class="form-group">
         <label>Nimi</label>
         <input name="nimi" class="form-control" type="text" value="{{attribuutit.nimi}}">

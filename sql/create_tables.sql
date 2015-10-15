@@ -3,7 +3,7 @@ CREATE TABLE Rooli(
     nimi varchar(20) NOT NULL,
     kuvaus varchar(120),
     vaativuuskerroin INTEGER NOT NULL,
-    poistettavissa BOOLEAN DEFAULT TRUE
+    maksimimaara INTEGER NOT NULL
 );
 
 CREATE TABLE Karhu(
@@ -33,20 +33,17 @@ CREATE TABLE Keikka(
     keikkaID SERIAL PRIMARY KEY,
     nimi varchar(50) NOT NULL,
     osallistujamaara INTEGER NOT NULL,
-    kohdeID INTEGER REFERENCES Kohde(kohdeID) NOT NULL,
-    karhuID INTEGER REFERENCES Karhu(karhuID) NOT NULL
-);
-
-CREATE TABLE Tulos(
-    tulosID SERIAL PRIMARY KEY,
-    keikkaID INTEGER REFERENCES Keikka(keikkaID) NOT NULL,
-    paiva DATE NOT NULL,
-    kuvaus varchar(120) NOT NULL,
-    saalis INTEGER NOT NULL
+    kohdeID INTEGER REFERENCES Kohde(kohdeID) ON DELETE SET NULL,
+    karhuID INTEGER REFERENCES Karhu(karhuID) ON DELETE SET NULL,
+    paikka varchar(30),
+    johtaja varchar(20),
+    suoritettu DATE,
+    kommentti varchar(100),
+    saalis INTEGER
 );
 
 CREATE TABLE Osallistuminen(
-    keikkaID INTEGER REFERENCES Keikka(keikkaID),
+    keikkaID INTEGER REFERENCES Keikka(keikkaID) ON DELETE CASCADE,
     karhuID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE,
     rooliID INTEGER REFERENCES Rooli(rooliID) ON DELETE SET NULL,
     PRIMARY KEY (keikkaID, karhuID)

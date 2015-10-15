@@ -1,0 +1,34 @@
+{% import "makrot/virheet.html" as virheet_makro  %}
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Keikalle ilmoittautuminen</h2>
+
+{% if virheet %}
+    {{virheet_makro.listaa_virheet(virheet)}}
+{% endif %}
+
+<p>Valitse tehtävä, jonka haluat suorittaa keikalla.<br>Voit halutessasi jättää tehtävän valitsematta, mutta "jokapaikanhöylänä" saat pienimmän osuuden saalisrahoista.</p>
+
+<form method="post" action="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu">
+    
+    <div class="form-group">
+        <label>Rooli<br></label>
+        <select class="form-control" name="rooliid">
+            <option value="0" selected="selected"> - Valitse rooli - </option>
+            {% for rooli in roolit %}
+                <option value="{{rooli.rooliid}}">{{rooli.nimi}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Ilmoittaudu keikalle</button>
+    </div>
+</form>
+
+<p>
+    <a href="{{base_path}}/keikat" class="btn btn-default">Peruuta ilmoittautuminen</a>
+</p>
+
+{% endblock %}

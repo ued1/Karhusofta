@@ -33,7 +33,11 @@ $routes->get('/viestit', 'tarkista_onko_kirjautunut', function() {
 });
 
 $routes->get('/viestit/uusi', 'tarkista_onko_kirjautunut', function() {
-    ViestiController::uusi();
+    ViestiController::uusi(null);
+});
+
+$routes->get('/viestit/uusi/:karhuid', 'tarkista_onko_kirjautunut', function($karhuid) {
+    ViestiController::uusi($karhuid);
 });
 
 $routes->post('/viestit', 'tarkista_onko_kirjautunut', function() {
@@ -64,16 +68,16 @@ $routes->get('/karhut/uusi', 'tarkista_onko_kirjautunut', function() {
     KarhuController::uusi();
 });
 
-$routes->get('/karhut/:karhuid/muokkaa', 'tarkista_onko_kirjautunut', function($karhuid) {
+$routes->post('/karhut/:karhuid/muokkaa', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($karhuid) {
     KarhuController::muokkaa($karhuid);
-});
-
-$routes->post('/karhut/:karhuid/muokkaa', 'tarkista_onko_kirjautunut', function($karhuid) {
-    KarhuController::paivita($karhuid);
 });
 
 $routes->post('/karhut/:karhuid/poista', 'tarkista_onko_kirjautunut', function($karhuid) {
     KarhuController::poista($karhuid);
+});
+
+$routes->post('/karhut/:karhuid', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($karhuid) {
+    KarhuController::paivita($karhuid);
 });
 
 $routes->get('/karhut/:karhuid', 'tarkista_onko_kirjautunut', function($karhuid) {
@@ -100,8 +104,12 @@ $routes->get('/keikat/uusi/:kohdeid', 'tarkista_onko_kirjautunut', function($koh
     KeikkaController::uusi($kohdeid);
 });
 
-$routes->post('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
+$routes->get('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::ilmoittaudu($keikkaid);
+});
+
+$routes->post('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::lisaa_ilmoittautuminen($keikkaid);
 });
 
 $routes->post('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautunut', function($keikkaid) {

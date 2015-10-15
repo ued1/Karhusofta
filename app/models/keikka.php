@@ -2,7 +2,7 @@
 
 class Keikka extends BaseModel {
 
-    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi, $rosvoporukka;
+    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi, $rosvoporukka, $suoritettu, $kommentti, $saalis, $paikka;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
@@ -10,7 +10,7 @@ class Keikka extends BaseModel {
     }
 
     public static function kaikki() {
-        $kysely = DB::connection()->prepare('SELECT keikka.keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo FROM Keikka, Kohde WHERE keikka.kohdeid = kohde.kohdeid');
+        $kysely = DB::connection()->prepare('SELECT keikka.keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhuid, suoritettu, kommentti, saalis, paikka, johtaja FROM Keikka, Kohde WHERE keikka.kohdeid = kohde.kohdeid');
         $kysely->execute();
         $rivit = $kysely->fetchAll();
         $keikat = array();
@@ -21,15 +21,21 @@ class Keikka extends BaseModel {
                 'nimi' => $rivi['nimi'],
                 'osallistujamaara' => $rivi['osallistujamaara'],
                 'kohdeid' => $rivi['kohdeid'],
+                'karhuid' => $rivi['karhuid'],
                 'kohdenimi' => $rivi['kohdenimi'],
-                'kohdearvo' => $rivi['arvo']
+                'kohdearvo' => $rivi['arvo'],
+                'suoritettu' => $rivi['suoritettu'],
+                'kommentti' => $rivi['kommentti'],
+                'saalis' => $rivi['kommentti'],
+                'paikka' => $rivi['paikka'],
+                'johtaja' => $rivi['johtaja']
             ));
         }
         return $keikat;
     }
 
     public static function etsi($keikkaid) {
-        $kysely = DB::connection()->prepare('SELECT keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhu.nimi AS karhunimi, karhu.karhuid FROM Keikka, Kohde, Karhu WHERE keikkaid = :keikkaid AND keikka.kohdeid = kohde.kohdeid AND keikka.karhuid = karhu.karhuid LIMIT 1');
+        $kysely = DB::connection()->prepare('SELECT keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhu.nimi AS karhunimi, karhu.karhuid, suoritettu, kommentti, saalis, paikka, johtaja FROM Keikka, Kohde, Karhu WHERE keikkaid = :keikkaid AND keikka.kohdeid = kohde.kohdeid AND keikka.karhuid = karhu.karhuid LIMIT 1');
         $kysely->execute(array('keikkaid' => $keikkaid));
         $rivi = $kysely->fetch();
 
@@ -42,7 +48,12 @@ class Keikka extends BaseModel {
                 'kohdenimi' => $rivi['kohdenimi'],
                 'kohdearvo' => $rivi['arvo'],
                 'karhunimi' => $rivi['karhunimi'],
-                'karhuid' => $rivi['karhuid']
+                'karhuid' => $rivi['karhuid'],
+                'suoritettu' => $rivi['suoritettu'],
+                'kommentti' => $rivi['kommentti'],
+                'saalis' => $rivi['saalis'],
+                'paikka' => $rivi['paikka'],
+                'johtaja' => $rivi['johtaja']
             ));
             return $keikka;
         }
@@ -154,14 +165,53 @@ class Keikka extends BaseModel {
         return $osallistujat;
     }
 
-    public static function ilmoittaudu($keikkaid, $karhuid) {
-        $kysely = DB::connection()->prepare('INSERT INTO Osallistuminen (keikkaid, karhuid) VALUES (:keikkaid, :karhuid)');
-        $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
+    public static function ilmoittaudu($keikkaid, $karhuid, $rooliid) {
+        $kysely = DB::connection()->prepare('INSERT INTO Osallistuminen (keikkaid, karhuid, rooliid) VALUES (:keikkaid, :karhuid, :rooliid)');
+        $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid, 'rooliid' => $rooliid));
     }
 
     public static function peru_osallistuminen($keikkaid, $karhuid) {
         $kysely = DB::connection()->prepare('DELETE From Osallistuminen WHERE keikkaid = :keikkaid AND karhuid = :karhuid');
         $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
     }
+    
+    public static function keikat_paattyneet() {
+        $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, osallistujamaara, paikka, suoritettu, kommentti, saalis FROM Keikka WHERE (suoritettu is not null OR kommentti is not null)');
+        $kysely->execute();
+        $rivit = $kysely->fetchAll();
+        $keikat = array();
 
+        foreach ($rivit as $rivi) {
+            $keikat[] = new Keikka(array(
+                'keikkaid' => $rivi['keikkaid'],
+                'nimi' => $rivi['nimi'],
+                'osallistujamaara' => $rivi['osallistujamaara'],
+                'paikka' => $rivi['paikka'],
+                'suoritettu' => $rivi['suoritettu'],
+                'kommentti' => $rivi['kommentti'],
+                'saalis' => $rivi['saalis']
+            ));
+        }
+        return $keikat;
+    }
+
+    public static function keikat_ilmoittautuminen() {
+        $kysely = DB::connection()->prepare('SELECT keikka.keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhuid FROM Keikka, Kohde WHERE keikka.kohdeid = kohde.kohdeid AND suoritettu is null AND saalis is null');
+        $kysely->execute();
+        $rivit = $kysely->fetchAll();
+        $keikat = array();
+
+        foreach ($rivit as $rivi) {
+            $keikat[] = new Keikka(array(
+                'keikkaid' => $rivi['keikkaid'],
+                'nimi' => $rivi['nimi'],
+                'osallistujamaara' => $rivi['osallistujamaara'],
+                'kohdeid' => $rivi['kohdeid'],
+                'karhuid' => $rivi['karhuid'],
+                'kohdenimi' => $rivi['kohdenimi'],
+                'kohdearvo' => $rivi['arvo'],
+            ));
+        }
+        return $keikat;
+    }
 }

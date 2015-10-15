@@ -9,9 +9,19 @@ class ViestiController extends BaseController {
         View::make('viesti/viestit.html', array('saapuneet' => $saapuneet, 'lahetetyt' => $lahetetyt));
     }
     
-    public static function uusi() {
+    public static function uusi($karhuid) {
+        if($_SESSION['karhuid'] == $karhuid) {
+            Redirect::to('/viestit', array('virhe' => 'Et voi lähettää itsellesi viestiä!'));
+        }
         $karhut = Karhu::kaikki();
-        View::make('viesti/uusi.html', array('karhut' => $karhut));
+        $attribuutit = array();
+        if($karhuid) {
+            $attribuutit = array(
+            'saajaid' => $karhuid,
+            'saajanimi' => Karhu::etsi($karhuid)->nimi
+            );
+        }
+        View::make('viesti/uusi.html', array('karhut' => $karhut, 'attribuutit' => $attribuutit));
     }
     
     public static function laheta() {
@@ -35,11 +45,11 @@ class ViestiController extends BaseController {
     
     public static function vastaa($viestiid) {
         $viesti = Viesti::etsi($viestiid);
-        $attribuutit = array(
+            $attribuutit = array(
             'otsikko' => "Re: " . $viesti->otsikko,
             'saajaid' => $viesti->lahettajaid,
             'saajanimi' => $viesti->lahettajanimi
-        );
+            );
         $karhut = Karhu::kaikki();
         View::make('viesti/uusi.html', array('karhut' => $karhut, 'attribuutit' => $attribuutit));
     }

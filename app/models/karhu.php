@@ -72,7 +72,7 @@ class Karhu extends BaseModel {
     
     public function voiko_poistaa() {
         // karhun voi poistaa, jos hän ei ole meneillään olevalla keikalla ryhmänjohtajana
-        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE karhuid = :karhuid');
+        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE karhuid = :karhuid AND suoritettu is null');
         $kysely->execute(array('karhuid' => $this->karhuid));
         $rivi = $kysely->fetch();
         if($rivi) {
@@ -80,7 +80,7 @@ class Karhu extends BaseModel {
         }
         return TRUE;
     }
-    
+        
     public function poista() {
         $kysely = DB::connection()->prepare('DELETE FROM Karhu WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $this->karhuid));
@@ -132,12 +132,23 @@ class Karhu extends BaseModel {
         $kysely = DB::connection()->prepare('SELECT keikkaid FROM Osallistuminen WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $karhuid));
         $rivit = $kysely->fetchAll();
+        return self::muuta_rivit_keikoiksi($rivit);
+    }
+    
+    public static function karhun_johdettavat_keikat($karhuid) {
+        $kysely = DB::connection()->prepare('SELECT keikkaid FROM Keikka WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $karhuid));
+        $rivit = $kysely->fetchAll();
+        return self::muuta_rivit_keikoiksi($rivit);
+    }
+    
+    private static function muuta_rivit_keikoiksi($rivit) {
         $keikat = array();
-
         foreach ($rivit as $rivi) {
             $keikat[] = Keikka::etsi($rivi['keikkaid']);
         }
         return $keikat;
     }
+    
     
 }

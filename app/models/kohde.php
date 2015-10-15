@@ -58,8 +58,8 @@ class Kohde extends BaseModel {
     }
     
     public function voiko_poistaa() {
-        // kohteen voi poistaa vain, jos kyseiseen kohteeseen ei ole keikka
-        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE kohdeid = :kohdeid');
+        // kohteen voi poistaa vain, jos kyseiseen kohteeseen ei ole keikka käynnissä
+        $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE kohdeid = :kohdeid AND suoritettu is null');
         $kysely->execute(array('kohdeid' => $this->kohdeid));
         $rivi = $kysely->fetch();
         if($rivi) {

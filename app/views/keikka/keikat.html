@@ -27,6 +27,7 @@
             <th>Arvio saaliista</th>
             <th>Ilmoittautuneita</th>
             <th>Status</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -36,30 +37,65 @@
                 <td><a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></td>
                 <td>{{keikka.kohdearvo}}</td>
                 <td>{{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</td>
-                {% if (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
-                    <td>Odottaa alkamista</td>
+                {% if keikka.suoritettu %}
+                    <td><span class="label label-default">Suoritettu</span></td>
+                {% elseif (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
+                    <td><span class="label label-info">Odottaa alkamista</span></td>
+                {% else %}
+                    <td><span class="label label-success">Ilmoittautuminen</span></td>
+                {% endif %}
+                
+                {% if keikka.suoritettu %}
+                    <td></td>
+                {% elseif user_logged_in.karhuid == keikka.karhuid %}
+                    <td><span class="label label-info">Olet ryhmänjohtajana keikalla</span></td>
+                {% elseif (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
+                    <td></td>
                 {% elseif keikka.kayttaja_keikalla == true %}
                     <td>
                         <form method="post" action="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittautuminen/peru">
                             <button type="submit" class="btn btn-default">Peru ilmoittautuminen</button>
                         </form>
                     </td>
-                    <!--
-                    <td><a class="btn btn-default btn-sm" href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittautuminen/peru">Peru ilmoittautuminen</a></td>
-                    -->
                 {% else %}
-                    <td>
-                        <form method="post" action="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu">
-                            <button type="submit" class="btn btn-default">Ilmoittaudu</button>
-                        </form>
-                    </td>
-                    <!--
-                    <td><a class="btn btn-default btn-sm" href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu">Ilmoittaudu</a></td>
-                    -->
+                    <td><a href="{{base_path}}/keikat/{{keikka.keikkaid}}/ilmoittaudu" class="btn btn-default">Ilmoittaudu</a></td>
                 {% endif %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+{% if vanhat_keikat %}
+<h4>Päättyneet keikat</h4>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Keikan nimi</th>
+            <th>Suorituspäivä</th>
+            <th>Kohde</th>
+            <th>Osallistujia</th>
+            <th>Saalis</th>
+            <th>Tulos</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for keikka in vanhat_keikat %}
+            <tr>
+                <td><a href="#">{{keikka.nimi}}</a></td>
+                <td>{{keikka.suoritettu}}</td>
+                <td>{{keikka.paikka}}</td>
+                <td>{{keikka.osallistujamaara}}</td>
+                <td>{{keikka.saalis}}</td>
+                {% if keikka.saalis == 0 %}
+                    <td><span class="label label-danger">Epäonnistunut</span></td>
+                {% else %}
+                    <td><span class="label label-success">Onnistunut</span></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
 
 {% endblock %}

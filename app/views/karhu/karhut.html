@@ -45,7 +45,7 @@
                 {% endif %}
                 {% if user_logged_in.admin %}
                 <td>
-                    <form method="post" action="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa">
+                    <form method="get" action="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa">
                         <button type="submit" class="btn btn-default">Muokkaa</button>
                     </form>
                 </td>

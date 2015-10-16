@@ -39,6 +39,8 @@
                 <td>{{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</td>
                 {% if keikka.suoritettu %}
                     <td><span class="label label-default">Suoritettu</span></td>
+                {% elseif keikka.paikka %}    
+                    <td><span class="label label-warning">Keikka käynnissä</span></td>
                 {% elseif (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
                     <td><span class="label label-info">Odottaa alkamista</span></td>
                 {% else %}
@@ -48,7 +50,17 @@
                 {% if keikka.suoritettu %}
                     <td></td>
                 {% elseif user_logged_in.karhuid == keikka.karhuid %}
-                    <td><span class="label label-info">Olet ryhmänjohtajana keikalla</span></td>
+                    {% if keikka.paikka %}
+                        <td><a href="{{base_path}}/keikat/{{keikka.keikkaid}}/kirjaa" class="btn btn-default">Kirjaa tulos</a></td>
+                    {% elseif (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
+                        <td>
+                            <form method="post" action="{{base_path}}/keikat/{{keikka.keikkaid}}/aloita">
+                                <button type="submit" class="btn btn-default">Aloita</button>
+                            </form>
+                        </td>
+                    {% else %}
+                        <td><span class="label label-info">Olet ryhmänjohtajana keikalla</span></td>
+                    {% endif %}
                 {% elseif (keikka.ilmoittautuneita)>=(keikka.osallistujamaara) %}
                     <td></td>
                 {% elseif keikka.kayttaja_keikalla == true %}

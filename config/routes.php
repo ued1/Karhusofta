@@ -68,7 +68,7 @@ $routes->get('/karhut/uusi', 'tarkista_onko_kirjautunut', function() {
     KarhuController::uusi();
 });
 
-$routes->post('/karhut/:karhuid/muokkaa', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($karhuid) {
+$routes->get('/karhut/:karhuid/muokkaa', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($karhuid) {
     KarhuController::muokkaa($karhuid);
 });
 
@@ -110,6 +110,18 @@ $routes->get('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', funct
 
 $routes->post('/keikat/:keikkaid/ilmoittaudu', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::lisaa_ilmoittautuminen($keikkaid);
+});
+
+$routes->post('/keikat/:keikkaid/aloita', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::aloita($keikkaid);
+});
+
+$routes->get('/keikat/:keikkaid/kirjaa', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::kirjaa_tulos($keikkaid);
+});
+
+$routes->post('/keikat/:keikkaid/kirjaa', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::tallenna_tulos($keikkaid);
 });
 
 $routes->post('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautunut', function($keikkaid) {

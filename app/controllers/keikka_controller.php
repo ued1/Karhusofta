@@ -29,6 +29,20 @@ class KeikkaController extends BaseController {
         $keikka = Keikka::etsi($keikkaid);
         View::make('keikka/keikka.html', array('keikka' => $keikka));
     }
+    
+    public static function aloita($keikkaid) {
+        $keikka = Keikka::etsi($keikkaid);
+        if(!$keikka) {
+            Redirect::to('/keikat', array('virhe' => 'Et voi aloittaa keikkaa, mitä ei ole olemassa.'));
+        } elseif($keikka->paikka) {
+            Redirect::to('/keikat', array('virhe' => 'Keikkaa ei voi aloittaa uudestaan.'));
+        }
+        if($keikka->aloita($_SESSION['karhuid'])) {
+            Redirect::to('/keikat', array('viesti' => 'Keikka aloitettu! Muista kirjata keikan tulos keikan jälkeen.'));
+        } else {
+            Redirect::to('/keikat', array('virhe' => 'Et voi aloittaa valitsemaasi keikkaa koska et ole sen ryhmänjohtaja.'));
+        }
+    }
 
     public static function lisaa() {
         $parametrit = $_POST;
@@ -59,7 +73,7 @@ class KeikkaController extends BaseController {
         $karhuid = $_SESSION['karhuid'];
         if(Karhu::onko_karhu_keikalla($karhuid, $keikkaid)) {
             Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Et voi ilmoittautua uudestaan samalle keikalle!'));
-        } else if($keikka->karhuid == $karhuid) {
+        } elseif($keikka->karhuid == $karhuid) {
             Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Olet jo ryhmänjohtajana keikalla!'));
         } elseif($keikka->onko_keikalla_tilaa()) {
             $karhun_roolit = Rooli::karhun_taidot($_SESSION['karhuid']);
@@ -95,7 +109,32 @@ class KeikkaController extends BaseController {
         } else {
             Redirect::to('/keikat', array('viesti' => null, 'virhe' => 'Et voi perua ilmoittautumista koska et ole kyseisellä keikalla!'));
         }
-        
+    }
+    
+    public static function kirjaa_tulos($keikkaid) {
+        $keikka = Keikka::etsi($keikkaid);
+        if(!$keikka) {
+            Redirect::to('/keikat', array('virhe' => 'Keikkaa ei ole olemassa.'));
+        } elseif($keikka->suoritettu) {
+            Redirect::to('/keikat', array('virhe' => 'Tulosta ei voi kirjata uudestaan'));
+        } elseif($keikka->karhuid != $_SESSION['karhuid']) {
+            Redirect::to('/keikat', array('virhe' => 'Et voi kirjata tulosta, koska et ole keikan ryhmänjohtaja'));
+        }
+        View::make('keikka/kirjaus.html', array('keikka' => $keikka));
+    }
+    
+    public static function tallenna_tulos($keikkaid) {
+        $parametrit = $_POST;
+        $keikka = Keikka::etsi($keikkaid);
+        $keikka->saalis = $parametrit['saalis'];
+        $keikka->kommentti = $parametrit['kommentti'];
+        $virheet = $keikka->validoi_tulos();
+        if(count($virheet) == 0) {
+            $keikka->kirjaa_tulos($_SESSION['karhuid']);
+            Redirect::to('/keikat', array('viesti' => 'Keikan tulos kirjattu!'));
+        } else {
+            View::make('keikka/kirjaus.html', array('virheet' => $virheet, 'keikka' => $keikka));
+        }
     }
 
 }

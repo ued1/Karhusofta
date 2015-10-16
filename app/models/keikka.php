@@ -70,6 +70,20 @@ class Keikka extends BaseModel {
         return FALSE;
     }
 
+    public function aloita($karhuid) {
+        if ($this->karhuid == $karhuid) {
+            $kysely = DB::connection()->prepare('UPDATE Keikka SET paikka = :kohdenimi WHERE keikkaid = :keikkaid');
+            $kysely->execute(array('kohdenimi' => $this->kohdenimi, 'keikkaid' => $this->keikkaid));
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    public function kirjaa_tulos($karhuid) {
+        $kysely = DB::connection()->prepare('UPDATE Keikka SET suoritettu = now(), saalis = :saalis, kommentti = :kommentti, johtaja = (select nimi FROM Karhu WHERE karhuid = :karhuid LIMIT 1) WHERE keikkaid = :keikkaid');
+        $kysely->execute(array('saalis' => $this->saalis, 'kommentti' => $this->kommentti, 'keikkaid' => $this->keikkaid, 'karhuid' => $karhuid));
+    }
+
     public function tallenna() {
         $kysely = DB::connection()->prepare('INSERT INTO Keikka (nimi, osallistujamaara, kohdeid, karhuid) VALUES (:nimi, :osallistujamaara, :kohdeid, :karhuid) RETURNING keikkaid');
         $kysely->execute(array('nimi' => $this->nimi, 'osallistujamaara' => $this->osallistujamaara, 'kohdeid' => $this->kohdeid, 'karhuid' => $this->karhuid));
@@ -101,6 +115,21 @@ class Keikka extends BaseModel {
         return $virheet;
     }
 
+    public function validoi_tulos() {
+        $virheet = array();
+        if (!$this->saalis || !is_numeric($this->saalis)) {
+            $virheet[] = 'Saalis tulee ilmaista kokonaisluvulla, joka on vähintään nolla.';
+        } elseif ($this->saalis == '') {
+            $virheet[] = 'Saalis ei voi olla tyhjä.';
+        } elseif (!ctype_digit($this->saalis) || $this->saalis < 0) {
+            $virheet[] = 'Saaliin tulee olla kokonaisluku, joka on vähintään nolla.';
+        }
+        if ($this->kommentti && !$this->merkkijono_tarpeeksi_lyhyt($this->kommentti, 100)) {
+            $virheet[] = 'Kommentti voi olla korkeintaan 100 merkkiä pitkä.';
+        }
+        return $virheet;
+    }
+
     public function validoi_valinnat() {
         $virheet = array();
         if ($this->kohdeid == '' || $this->kohdeid == 0) {
@@ -111,17 +140,15 @@ class Keikka extends BaseModel {
         }
         return $virheet;
     }
-    
+
     public function tarkista_osallistujat() {
         $virheet = array();
         if ($this->rosvoporukka != null) {
             
-            
-            
         }
         return $virheet;
     }
-    
+
     public function onko_keikalla_tilaa() {
         if ($this->osallistujamaara > self::osallistujia($this->keikkaid)) {
             return TRUE;
@@ -135,7 +162,7 @@ class Keikka extends BaseModel {
         $rivi = $kysely->fetch();
         return $rivi[0];
     }
-    
+
     public function aseta_rosvoporukka($rosvoporukka) {
         $this->rosvoporukka = $rosvoporukka;
     }
@@ -151,7 +178,7 @@ class Keikka extends BaseModel {
             $this->kayttaja_keikalla = FALSE;
         }
     }
-    
+
     public static function osallistujat($keikkaid) {
         $kysely = DB::connection()->prepare('SELECT karhuid from Osallistuminen WHERE keikkaid = :keikkaid');
         $kysely->execute(array('keikkaid' => $keikkaid));
@@ -174,7 +201,7 @@ class Keikka extends BaseModel {
         $kysely = DB::connection()->prepare('DELETE From Osallistuminen WHERE keikkaid = :keikkaid AND karhuid = :karhuid');
         $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
     }
-    
+
     public static function keikat_paattyneet() {
         $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, osallistujamaara, paikka, suoritettu, kommentti, saalis FROM Keikka WHERE (suoritettu is not null OR kommentti is not null)');
         $kysely->execute();
@@ -196,7 +223,7 @@ class Keikka extends BaseModel {
     }
 
     public static function keikat_ilmoittautuminen() {
-        $kysely = DB::connection()->prepare('SELECT keikka.keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhuid FROM Keikka, Kohde WHERE keikka.kohdeid = kohde.kohdeid AND suoritettu is null AND saalis is null');
+        $kysely = DB::connection()->prepare('SELECT keikka.keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhuid, paikka FROM Keikka, Kohde WHERE keikka.kohdeid = kohde.kohdeid AND suoritettu is null AND saalis is null');
         $kysely->execute();
         $rivit = $kysely->fetchAll();
         $keikat = array();
@@ -210,8 +237,10 @@ class Keikka extends BaseModel {
                 'karhuid' => $rivi['karhuid'],
                 'kohdenimi' => $rivi['kohdenimi'],
                 'kohdearvo' => $rivi['arvo'],
+                'paikka' => $rivi['paikka']
             ));
         }
         return $keikat;
     }
+
 }

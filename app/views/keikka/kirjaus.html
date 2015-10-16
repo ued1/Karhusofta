@@ -1,0 +1,36 @@
+{% import "makrot/virheet.html" as virheet_makro  %}
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Keikan tuloksen kirjaus</h2>
+
+{% if virheet %}
+    {{virheet_makro.listaa_virheet(virheet)}}
+{% endif %}
+
+<p><br>Keikka: <strong>{{keikka.nimi}}</strong></p>
+<p>Kohteeseen: <strong>{{keikka.paikka}}</strong></p>
+<p>Arvio saaliista: <strong>{{keikka.kohdearvo}}</strong></p>
+
+<form method="post" action="{{base_path}}/keikat/{{keikka.keikkaid}}/kirjaa">
+    <div class="form-group">
+        <label>Keikalla saadut rahat</label>
+        <input name="saalis" class="form-control" value="{{keikka.saalis}}" type="text">
+    </div>
+    
+    <div class="form-group">
+        <label>Kommentti suorituksesta</label>
+        <input name="kommentti" class="form-control" value="{{keikka.kommentti}}" type="text">
+    </div>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Kirjaa</button>
+    </div>
+    
+</form>
+
+<p>
+    <a href="{{base_path}}/keikat" class="btn btn-default">Takaisin</a>
+</p>
+
+{% endblock %}

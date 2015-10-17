@@ -28,6 +28,10 @@ $routes->post('/chat', 'tarkista_onko_kirjautunut', function() {
     ChatController::uusi();
 });
 
+$routes->post('/chat/tyhjenna', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
+    ChatController::tyhjenna();
+});
+
 $routes->get('/viestit', 'tarkista_onko_kirjautunut', function() {
     ViestiController::index();
 });
@@ -60,11 +64,11 @@ $routes->get('/karhut', 'tarkista_onko_kirjautunut', function() {
     KarhuController::index();
 });
 
-$routes->post('/karhut', 'tarkista_onko_kirjautunut', function() {
+$routes->post('/karhut', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
     KarhuController::lisaa();
 });
 
-$routes->get('/karhut/uusi', 'tarkista_onko_kirjautunut', function() {
+$routes->get('/karhut/uusi', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
     KarhuController::uusi();
 });
 
@@ -132,7 +136,7 @@ $routes->get('/keikat/:keikkaid', 'tarkista_onko_kirjautunut', function($keikkai
     KeikkaController::nayta($keikkaid);
 });
 
-$routes->get('/roolit', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function() {
+$routes->get('/roolit', 'tarkista_onko_kirjautunut', function() {
     RooliController::index();
 });
 
@@ -156,7 +160,7 @@ $routes->post('/roolit/:rooliid/poista', 'tarkista_onko_kirjautunut', 'tarkista_
     RooliController::poista($rooliid);
 });
 
-$routes->get('/roolit/:roolitid', 'tarkista_onko_kirjautunut', 'tarkista_onko_admin', function($rooliid) {
+$routes->get('/roolit/:roolitid', 'tarkista_onko_kirjautunut', function($rooliid) {
     RooliController::nayta($rooliid);
 });
 

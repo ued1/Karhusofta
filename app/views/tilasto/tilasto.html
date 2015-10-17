@@ -9,4 +9,14 @@
 <p>Onnistumisprosentti: <strong>{{tilasto.onnistumisprosentti}}</strong></p>
 <p>Tuottavin keikka: <strong>{{tilasto.tuottavin_keikka.nimi}} - {{tilasto.tuottavin_keikka.saalis}}</strong></p>
 
+<h4>Parhaiten tienanneet karhut</h4>
+
+<div>
+    <ol>
+        {% for topkarhu in tilasto.topkarhut %}
+            <li><a href="{{base_path}}/karhut/{{topkarhu.karhuid}}">{{topkarhu.nimi}}</a> - {{topkarhu.saldo}}</li>
+        {% endfor %}
+    </ol>
+</div>
+
 {% endblock %}

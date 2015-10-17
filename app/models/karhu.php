@@ -2,15 +2,15 @@
 
 class Karhu extends BaseModel {
 
-    public $karhuid, $salasana, $nimi, $saldo, $pvm, $taidot, $admin;
+    public $karhuid, $tunnus, $salasana, $nimi, $saldo, $pvm, $taidot, $admin;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validoi_nimen_pituus', 'validoi_salasanan_pituus');
+        $this->validators = array('validoi_nimen_pituus', 'validoi_tunnus', 'validoi_salasanan_pituus');
     }
 
     public static function kaikki() {
-        $kysely = DB::connection()->prepare('SELECT * FROM Karhu');
+        $kysely = DB::connection()->prepare('SELECT * FROM Karhu ORDER BY pvm');
         $kysely->execute();
         $rivit = $kysely->fetchAll();
         $karhut = array();
@@ -19,6 +19,7 @@ class Karhu extends BaseModel {
             $t = Rooli::karhun_taidot($rivi['karhuid']);
             $karhut[] = new Karhu(array(
                 'karhuid' => $rivi['karhuid'],
+                'tunnus' => $rivi['tunnus'],
                 'nimi' => $rivi['nimi'],
                 'saldo' => $rivi['saldo'],
                 'pvm' => $rivi['pvm'],
@@ -39,6 +40,7 @@ class Karhu extends BaseModel {
             $karhu = new Karhu(array(
                 'karhuid' => $rivi['karhuid'],
                 'nimi' => $rivi['nimi'],
+                'tunnus' => $rivi['tunnus'],
                 'salasana' => $rivi['salasana'],
                 'saldo' => $rivi['saldo'],
                 'pvm' => $rivi['pvm'],
@@ -59,15 +61,15 @@ class Karhu extends BaseModel {
     }
 
     public function tallenna() {
-        $kysely = DB::connection()->prepare('INSERT INTO Karhu (nimi, salasana, saldo, pvm) VALUES (:nimi, :salasana, 0, now()::date) RETURNING karhuid');
-        $kysely->execute(array('nimi' => $this->nimi, 'salasana' => $this->salasana));
+        $kysely = DB::connection()->prepare('INSERT INTO Karhu (nimi, tunnus, salasana, saldo, pvm) VALUES (:nimi, :tunnus, :salasana, 0, now()::date) RETURNING karhuid');
+        $kysely->execute(array('nimi' => $this->nimi, 'tunnus' => $this->tunnus, 'salasana' => $this->salasana));
         $rivi = $kysely->fetch();
         $this->karhuid = $rivi['karhuid'];
     }
     
     public function paivita() {
-        $kysely = DB::connection()->prepare('UPDATE Karhu SET nimi = :nimi, salasana = :salasana WHERE karhuid = :karhuid');
-        $kysely->execute(array('karhuid' => $this->karhuid, 'nimi' => $this->nimi, 'salasana' => $this->salasana));
+        $kysely = DB::connection()->prepare('UPDATE Karhu SET nimi = :nimi, tunnus = :tunnus, salasana = :salasana WHERE karhuid = :karhuid');
+        $kysely->execute(array('karhuid' => $this->karhuid, 'nimi' => $this->nimi, 'tunnus' => $this->tunnus, 'salasana' => $this->salasana));
     }
     
     public function voiko_poistaa() {
@@ -87,7 +89,7 @@ class Karhu extends BaseModel {
     }
     
     public static function tunnistaudu($tunnus, $salasana) {
-        $kysely = DB::connection()->prepare('SELECT * FROM Karhu WHERE nimi = :tunnus AND salasana = :salasana LIMIT 1');
+        $kysely = DB::connection()->prepare('SELECT * FROM Karhu WHERE tunnus = :tunnus AND salasana = :salasana LIMIT 1');
         $kysely->execute(array('tunnus' => $tunnus, 'salasana' => $salasana));
         $rivi = $kysely->fetch();
         if($rivi) {
@@ -118,6 +120,29 @@ class Karhu extends BaseModel {
         return $virheet;
     }
     
+    public static function onko_tunnus_olemassa($tunnus) {
+        $kysely = DB::connection()->prepare('SELECT tunnus FROM Karhu WHERE tunnus = :tunnus LIMIT 1');
+        $kysely->execute(array('tunnus' => $tunnus));
+        $rivi = $kysely->fetch();
+        if($rivi) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+    
+    public function validoi_tunnus() {
+        $virheet = array();
+        if ($this->tunnus == '') {
+            $virheet[] = 'Karhulla tulee olla tunnus!';
+        } elseif (!$this->merkkijono_tarpeeksi_pitka($this->tunnus, 3) || !$this->merkkijono_tarpeeksi_lyhyt($this->tunnus, 20)) {
+            $virheet[] = 'Karhun tunnuksen tulee olla 5-20 merkkiä pitkä!';
+        } elseif (self::onko_tunnus_olemassa($this->tunnus)) {
+            $virheet[] = 'Tunnus on jo käytössä! Valitse uusi tunnus.';
+        }
+        return $virheet;
+    }
+    
+    
     public static function onko_karhu_keikalla($karhuid, $keikkaid) {
         $kysely = DB::connection()->prepare('SELECT keikkaid FROM Osallistuminen WHERE keikkaid = :keikkaid AND karhuid = :karhuid LIMIT 1');
         $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
@@ -145,7 +170,9 @@ class Karhu extends BaseModel {
     private static function muuta_rivit_keikoiksi($rivit) {
         $keikat = array();
         foreach ($rivit as $rivi) {
-            $keikat[] = Keikka::etsi($rivi['keikkaid']);
+            $keikka = Keikka::etsi($rivi['keikkaid']);
+            $keikka->lisaa_ilmoittautumistieto();
+            $keikat[] = $keikka;
         }
         return $keikat;
     }

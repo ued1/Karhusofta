@@ -25,4 +25,9 @@ class ChatController extends BaseController {
         }
     }
     
+    public static function tyhjenna() {
+        Chatviesti::poista_kaikki();
+        Redirect::to('/chat');
+    }
+        
 }

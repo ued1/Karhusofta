@@ -7,18 +7,20 @@
     {{viesti}}
 </div>
 {% endif %}
-
+{% if user_logged_in.admin %}
 <p>
     <a href="{{base_path}}/roolit/uusi" class="btn btn-primary">Uusi rooli</a>
 </p>
-
+{% endif %}
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Roolin nimi</th>
             <th>Kuvaus</th>
             <th>Vaativuuskerroin</th>
+            {% if user_logged_in.admin %}
             <th></th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -27,7 +29,9 @@
                 <td><a href="{{base_path}}/roolit/{{rooli.rooliid}}">{{rooli.nimi}}</a></td>
                 <td>{{rooli.kuvaus}}</td>
                 <td>{{rooli.vaativuuskerroin}}</td>
+                {% if user_logged_in.admin %}
                 <td><a class="btn btn-default btn-sm" href="{{base_path}}/roolit/{{rooli.rooliid}}/muokkaa">Muokkaa</a></td>
+                {% endif %}
         </tr>
         {% endfor %}
     </tbody>

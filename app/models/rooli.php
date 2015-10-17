@@ -57,9 +57,9 @@ class Rooli extends BaseModel {
         $kysely->execute(array('rooliid' => $this->rooliid, 'nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin, 'maksimimaara' => $this->maksimimaara));
     }
     
-    public function poista() {
+    public static function poista($rooliid) {
         $kysely = DB::connection()->prepare('DELETE FROM Rooli WHERE rooliid = :rooliid');
-        $kysely->execute(array('rooliid' => $this->rooliid));
+        $kysely->execute(array('rooliid' => $rooliid));
     }
 
     public static function karhun_taidot($karhuid) {
@@ -105,9 +105,9 @@ class Rooli extends BaseModel {
         if ($this->vaativuuskerroin == '') {
             $virheet[] = 'Vaativuuskerroin ei voi olla tyhjä!';
         } elseif (!is_numeric($this->vaativuuskerroin) || !ctype_digit($this->vaativuuskerroin)) {
-            $virheet[] = 'Vaativuuskertoimen tulee olla positiivinen kokonaisluvu, joka on vähintään 1 ja enintään 10.';
-        } elseif ($this->vaativuuskerroin < 1 || $this->vaativuuskerroin > 10) {
-            $virheet[] = 'Vaativuuskertoimen tulee olla vähintään 1 ja enintään 10!';
+            $virheet[] = 'Vaativuuskertoimen tulee olla positiivinen kokonaisluvu, joka on vähintään 5 ja enintään 10.';
+        } elseif ($this->vaativuuskerroin < 5 || $this->vaativuuskerroin > 10) {
+            $virheet[] = 'Vaativuuskertoimen tulee olla vähintään 5 ja enintään 10!';
         }
         return $virheet;
     }

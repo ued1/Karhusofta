@@ -31,7 +31,7 @@
     </form>
 {% else %}
     {% if not viesti %}
-    <div class="alert alert-success">Olet kirjautunut sisään.</div>
+    <div class="alert alert-success">Olet kirjautunut sisään, {{user_logged_in.nimi}}</div>
     {% endif %}
     
     {% if uudetviestit %}
@@ -42,7 +42,7 @@
         {% endif %}
         <ul>
             {% for uusiviesti in uudetviestit %}
-                <li><a href="{{base_path}}/viestit/{{uusiviesti.viestiid}}">{{uusiviesti.lahetysaika}} {{uusiviesti.lahettajanimi}} --- {{uusiviesti.otsikko}}</a></li>
+                <li>{{uusiviesti.lahetysaika}} {{uusiviesti.lahettajanimi}} --- <a href="{{base_path}}/viestit/{{uusiviesti.viestiid}}">{{uusiviesti.otsikko}}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -51,7 +51,11 @@
         <h4>Olet ryhmänjohtajana keikoilla:</h4>
         <ul>
         {% for keikka in johdettavat_keikat %}
-            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+            {% if keikka.ilmoittautuneita >= keikka.osallistujamaara and keikka.paikka is null %}
+                <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}  </a><span class="label label-info">Voit aloittaa tämän keikan sivulla <a href="{{base_path}}/keikat">Keikat</a></span></li>
+            {% else %}
+                <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+            {% endif %}
         {% endfor %}
         </ul>
     {% endif %}
@@ -60,7 +64,9 @@
         <h4>Olet ilmoittautunut keikoille:</h4>
         <ul>
         {% for keikka in keikat %}
+            {% if user_logged_in.karhuid != keikka.karhuid %}
             <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+            {% endif %}
         {% endfor %}
         </ul>
     {% endif %}

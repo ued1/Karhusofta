@@ -9,11 +9,11 @@
     {{viesti}}
 </div>
 {% endif %}
-
+{% if user_logged_in.admin %}
 <p>
     <a href="{{base_path}}/karhut/uusi" class="btn btn-primary">Uusi karhu</a>
 </p>
-
+{% endif %}
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -30,7 +30,11 @@
     <tbody>
         {% for karhu in karhut %}
             <tr>
+                {% if karhu.admin %}
+                <td><a href="{{base_path}}/karhut/{{karhu.karhuid}}">{{karhu.nimi}}</a> <span class="label label-info">Admin</span></td>
+                {% else %}
                 <td><a href="{{base_path}}/karhut/{{karhu.karhuid}}">{{karhu.nimi}}</a></td>
+                {% endif %}
                 <td>{{karhu.pvm}}</td>
                 <td>{{karhu.saldo}}</td>
                 <td>

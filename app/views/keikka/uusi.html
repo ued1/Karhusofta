@@ -33,8 +33,25 @@
     </div>
         
     <div class="form-group">
-        <label>Osallistujia (itsesi lisäksi)</label>
+        <label>Osallistujia</label>
         <input name="osallistujamaara" class="form-control" value="{{attribuutit.osallistujamaara}}" type="text">
+    </div>
+    
+    <div class="form-group">
+        <label>Voit halutessasi valita roolin keikalle<br></label>
+        <select class="form-control" name="rooliid">
+            {% if not valittu_rooli %}
+                <option value="0" selected="selected"> - Valitse rooli - </option>
+            {% else %}
+                <option value="{{valittu_rooli.rooliid}}" selected="selected">{{valittu_rooli.nimi}}</option> 
+            {% endif %}
+            
+            {% for taito in omat_taidot %}
+                {% if valittu_rooli.rooliid != taito.rooliid %}
+                    <option value="{{taito.rooliid}}">{{taito.nimi}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
     </div>
     
     <div class="form-group">

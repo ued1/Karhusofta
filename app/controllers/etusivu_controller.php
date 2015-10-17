@@ -21,7 +21,7 @@ class EtusivuController extends BaseController {
         if($karhu) {
             $_SESSION['karhuid'] = $karhu->karhuid;
             $_SESSION['nimi'] = $karhu->nimi;
-            Redirect::to('/', array('viesti' => 'Tervetuloa takaisin ' . $karhu->nimi . '!'));
+            Redirect::to('/', array('viesti' => 'Tervetuloa ' . $karhu->nimi . '!'));
         } else {
             View::make('etusivu.html', array('virhe' => 'Väärä käyttäjätunnus tai salasana!', 'kayttajatunnus' => $parametrit['tunnus']));
         }

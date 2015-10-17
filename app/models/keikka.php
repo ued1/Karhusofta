@@ -83,14 +83,15 @@ class Keikka extends BaseModel {
         $kysely = DB::connection()->prepare('UPDATE Keikka SET suoritettu = now(), saalis = :saalis, kommentti = :kommentti, johtaja = (select nimi FROM Karhu WHERE karhuid = :karhuid LIMIT 1) WHERE keikkaid = :keikkaid');
         $kysely->execute(array('saalis' => $this->saalis, 'kommentti' => $this->kommentti, 'keikkaid' => $this->keikkaid, 'karhuid' => $karhuid));
     }
-
-    public function tallenna() {
+        
+    public function tallenna($rooliid) {
         $kysely = DB::connection()->prepare('INSERT INTO Keikka (nimi, osallistujamaara, kohdeid, karhuid) VALUES (:nimi, :osallistujamaara, :kohdeid, :karhuid) RETURNING keikkaid');
         $kysely->execute(array('nimi' => $this->nimi, 'osallistujamaara' => $this->osallistujamaara, 'kohdeid' => $this->kohdeid, 'karhuid' => $this->karhuid));
         $rivi = $kysely->fetch();
         $this->keikkaid = $rivi['keikkaid'];
+        self::ilmoittaudu($this->keikkaid, $this->karhuid, $rooliid);
     }
-
+    
     public function validoi_nimi() {
         $virheet = array();
         if ($this->nimi == '' || !$this->merkkijono_tarpeeksi_lyhyt($this->nimi, 50)) {
@@ -109,8 +110,8 @@ class Keikka extends BaseModel {
             $virheet[] = 'Osallistujamäärä ei voi olla tyhjä!';
         } elseif (!ctype_digit($this->osallistujamaara)) {
             $virheet[] = 'Osallistujamäärän tulee olla kokonaisluku!';
-        } elseif ($this->osallistujamaara < 2) {
-            $virheet[] = 'Osallistujia täytyy olla vähintään kaksi!';
+        } elseif ($this->osallistujamaara < 3) {
+            $virheet[] = 'Osallistujia täytyy olla vähintään kolme!';
         }
         return $virheet;
     }
@@ -193,6 +194,9 @@ class Keikka extends BaseModel {
     }
 
     public static function ilmoittaudu($keikkaid, $karhuid, $rooliid) {
+        if($rooliid == 0) {
+            $rooliid = NULL;
+        }
         $kysely = DB::connection()->prepare('INSERT INTO Osallistuminen (keikkaid, karhuid, rooliid) VALUES (:keikkaid, :karhuid, :rooliid)');
         $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid, 'rooliid' => $rooliid));
     }

@@ -9,6 +9,7 @@ CREATE TABLE Rooli(
 CREATE TABLE Karhu(
     karhuID SERIAL PRIMARY KEY,
     nimi varchar(20) NOT NULL,
+    tunnus varchar(20) NOT NULL,
     salasana varchar(20) NOT NULL,
     saldo INTEGER NOT NULL,
     pvm DATE,

@@ -37,6 +37,7 @@ class KarhuController extends BaseController {
 
         $attribuutit = array(
             'nimi' => $parametrit['nimi'],
+            'tunnus' => $parametrit['tunnus'],
             'salasana' => $parametrit['salasana'],
             'saldo' => 0
         );
@@ -61,6 +62,7 @@ class KarhuController extends BaseController {
         $attribuutit = array(
             'karhuid' => $karhuid,
             'nimi' => $parametrit['nimi'],
+            'tunnus' => $parametrit['tunnus'],
             'salasana' => $parametrit['salasana']
         );
         $karhu = new Karhu($attribuutit);

@@ -15,18 +15,18 @@ class KeikkaController extends BaseController {
     
     public static function uusi($kohdeid) {
         $kohteet = Kohde::kaikki();
-        $karhut = Karhu::kaikki();
-        $roolit = Rooli::kaikki();
+        $omat_taidot = Rooli::karhun_taidot($_SESSION['karhuid']);
         if($kohdeid) {
             $valittu_kohde = Kohde::etsi($kohdeid);
-            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'valittu_kohde' => $valittu_kohde, 'roolit' => $roolit));
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'valittu_kohde' => $valittu_kohde, 'omat_taidot' => $omat_taidot));
         } else {
-            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'karhut' => $karhut, 'roolit' => $roolit));
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'omat_taidot' => $omat_taidot));
         }
     }
 
     public static function nayta($keikkaid) {
         $keikka = Keikka::etsi($keikkaid);
+        $keikka->lisaa_ilmoittautumistieto();
         View::make('keikka/keikka.html', array('keikka' => $keikka));
     }
     
@@ -59,12 +59,14 @@ class KeikkaController extends BaseController {
         
         $virheet = $keikka->virheet();
         if (count($virheet) == 0) {
-            $keikka->tallenna();
+            $keikka->tallenna($parametrit['rooliid']);
             Redirect::to('/keikat/' . $keikka->keikkaid, array('viesti' => 'Uusi keikka lisätty'));
         } else {
             $kohteet = Kohde::kaikki();
+            $valittu_rooli = Rooli::etsi($parametrit['rooliid']);
+            $omat_taidot = Rooli::karhun_taidot($_SESSION['karhuid']);
             $valittu_kohde = Kohde::etsi($valittu_kohdeid);
-            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'virheet' => $virheet, 'attribuutit' => $attribuutit, 'valittu_kohde' => $valittu_kohde));
+            View::make('keikka/uusi.html', array('kohteet' => $kohteet, 'virheet' => $virheet, 'attribuutit' => $attribuutit, 'valittu_kohde' => $valittu_kohde, 'valittu_rooli' => $valittu_rooli, 'omat_taidot' => $omat_taidot));
         }
     }
     
@@ -131,7 +133,8 @@ class KeikkaController extends BaseController {
         $virheet = $keikka->validoi_tulos();
         if(count($virheet) == 0) {
             $keikka->kirjaa_tulos($_SESSION['karhuid']);
-            Redirect::to('/keikat', array('viesti' => 'Keikan tulos kirjattu!'));
+            Kassa::maksa_keikan_palkka($keikkaid);
+            Redirect::to('/keikat', array('viesti' => 'Keikan tulos kirjattu ja palkat maksettu osallistujille!'));
         } else {
             View::make('keikka/kirjaus.html', array('virheet' => $virheet, 'keikka' => $keikka));
         }

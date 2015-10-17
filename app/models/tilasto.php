@@ -10,6 +10,7 @@ class Tilasto extends BaseModel {
         $tilasto['tuottavin_keikka'] = self::tuottavin_keikka();
         $tilasto['kokonaissaalis'] = self::kokonaissaalis();
         $tilasto['keikkoja'] = self::suoritettujen_keikkojen_lkm();
+        $tilasto['topkarhut'] = self::top5_karhut_saldo();
         return $tilasto;
     }
     
@@ -57,7 +58,22 @@ class Tilasto extends BaseModel {
         if($negatiiviset == 0) {
             return "100%";
         }
-        return round($negatiiviset / $yhteensa * 100) . "%";
+        return round(($yhteensa - $negatiiviset) / $yhteensa * 100) . "%";
+    }
+    
+    private static function top5_karhut_saldo() {
+        $kysely = DB::connection()->prepare('SELECT karhuid, nimi, saldo FROM Karhu ORDER BY saldo DESC LIMIT 5');
+        $kysely->execute();
+        $rivit = $kysely->fetchAll();
+        $karhut = array();
+        foreach ($rivit as $rivi) {
+            $karhut[] = new Karhu(array(
+                'karhuid' => $rivi['karhuid'],
+                'nimi' => $rivi['nimi'],
+                'saldo' => $rivi['saldo']
+            ));
+        }
+        return $karhut;
     }
 
 }

@@ -9,7 +9,7 @@ class Chatviesti extends BaseModel {
     }
 
     public static function kaikki() {
-        $kysely = DB::connection()->prepare("SELECT chatviestiid, to_char(aika, 'YYYY-MM-DD HH24:MI') as parempiaika, viesti, karhuid FROM Chat ORDER BY aika DESC");
+        $kysely = DB::connection()->prepare("SELECT chatviestiid, to_char(aika, 'YYYY-MM-DD HH24:MI') as parempiaika, viesti, karhuid FROM Chat ORDER BY aika DESC LIMIT 12");
         $kysely->execute();
         $rivit = $kysely->fetchAll();
         $viestit = array();
@@ -34,8 +34,13 @@ class Chatviesti extends BaseModel {
     }
             
     public function poista() {
-        $kysely = DB::connection()->prepare('DELETE FROM Viesti WHERE chatviestiid = :chatviestiid');
+        $kysely = DB::connection()->prepare('DELETE FROM Chat WHERE chatviestiid = :chatviestiid');
         $kysely->execute(array('chatviestiid' => $this->chatviestiid));
+    }
+    
+    public static function poista_kaikki() {
+        $kysely = DB::connection()->prepare('DELETE FROM Chat');
+        $kysely->execute();
     }
 
     public static function validoi_viesti($teksti) {

@@ -26,7 +26,8 @@ class RooliController extends BaseController {
         $attribuutit = array(
             'nimi' => $parametrit['nimi'],
             'kuvaus' => $parametrit['kuvaus'],
-            'vaativuuskerroin' => $parametrit['vaativuuskerroin']
+            'vaativuuskerroin' => $parametrit['vaativuuskerroin'],
+            'maksimimaara' => $parametrit['maksimimaara']
         );
         $rooli = new Rooli($attribuutit);
         $virheet = $rooli->virheet();
@@ -45,7 +46,8 @@ class RooliController extends BaseController {
             'rooliid' => $rooliid,
             'nimi' => $parametrit['nimi'],
             'kuvaus' => $parametrit['kuvaus'],
-            'vaativuuskerroin' => $parametrit['vaativuuskerroin']
+            'vaativuuskerroin' => $parametrit['vaativuuskerroin'],
+            'maksimimaara' => $parametrit['maksimimaara']
         );
         $rooli = new Rooli($attribuutit);
         $virheet = $rooli->virheet();
@@ -58,13 +60,8 @@ class RooliController extends BaseController {
     }
     
     public static function poista($rooliid) {
-        $rooli = Rooli::etsi($rooliid);
-        if($rooli->poistettavissa) {
-            $rooli->poista();
-            Redirect::to('/roolit', array('viesti' => 'Rooli poistettu onnistuneesti!'));
-        } else {
-            View::make('rooli/rooli.html', array('rooli' => $rooli, 'virhe' => 'Valitsemasi rooli on liian tärkeä, sitä ei voi poistaa!'));
-        }
+        Rooli::poista($rooliid);
+        Redirect::to('/roolit', array('viesti' => 'Rooli poistettu onnistuneesti!'));
     }
     
 }

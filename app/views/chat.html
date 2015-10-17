@@ -29,4 +29,13 @@
 </div>
 {% endfor %}
 
+{% if user_logged_in.admin %}
+    <div>
+        <form method="post" action="{{base_path}}/chat/tyhjenna">
+            <button type="submit" class="btn btn-danger btn-xs">Poista kaikki</button>
+        </form>
+    </div>
+{% endif %}
+
+
 {% endblock %}

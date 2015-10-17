@@ -1,3 +1,4 @@
+{% import "makrot/lomakkeet.html" as lomakkeet %}
 {% extends "base.html" %}
 {% block content %}
 
@@ -8,18 +9,36 @@
 {% endif %}
 
 <h2>Keikka: {{keikka.nimi}}</h2>
-
-<p><strong>Kohde: </strong> <a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></p>
+{% if (user_logged_in.admin or keikka.karhuid == user_logged_in.karhuid) and keikka.paikka is null and keikka.suoritettu is null %}
+<p>
+    {{lomakkeet.poista_nappi("#{base_path}/keikat/#{keikka.keikkaid}/poista")}}
+    <br>
+</p>
+{% endif %}
+{% if keikka.kohdeid and keikka.karhuid %}
+<p><br><strong>Kohde: </strong> <a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></p>
 <p><strong>Arvio saaliista: </strong>{{keikka.kohdearvo}}</p>
 <p><strong>Ryhmänjohtaja: </strong> <a href="{{base_path}}/karhut/{{keikka.karhuid}}">{{keikka.karhunimi}}</a></p>
 <p><strong>Ilmoittautuneita: </strong>{{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</p>
+{% else %}
+<p><br><strong>Kohde: </strong>{{keikka.paikka}}</p>
+<p><strong>Saalis: </strong>{{keikka.saalis}}</p>
+{% endif %}
 
-<p>
-    <a href="#" class="btn btn-danger">Poista</a>
-</p>
+{% if osallistumiset %}
+    {% if keikka.suoritettu %}
+    <p><strong>Osallistuneet:</strong></p>
+    {% endif %}
+<ul>
+    {% for osallistuminen in osallistumiset %}
+    <li>{{osallistuminen.nimi}} - {{osallistuminen.roolinimi}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
 <p>
     <a href="{{base_path}}/keikat" class="btn btn-default">Takaisin</a>
 </p>
+
 
 {% endblock %}

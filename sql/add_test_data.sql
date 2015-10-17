@@ -146,7 +146,7 @@ INSERT INTO Chat (karhuid, aika, viesti) VALUES
 
 INSERT INTO Viesti (lahetysaika, lukemisaika, lahettajaid, saajaid, otsikko, viesti) VALUES
     ('2015-9-9 13:01', '2015-9-9 15:05', 1, 4, 'LIKAISET VESSAT', 'Vessat ovat likaisia, mene heti siivoamaan!!'),
-    ('2015-9-9 15:07', '2015-9-9 15:08', 4, 1, 'RE: LIKAISET VESSAT', 'Joojoo...siivoan kun kerkeen'),
+    ('2015-9-9 15:07', '2015-9-9 15:08', 4, 1, 'Re: LIKAISET VESSAT', 'Joojoo...siivoan kun kerkeen'),
     ('2015-10-16 22:44', NULL, 11, 2, 'Ei oo saunaa!!', 'Hei MEGAPERSE unohdit laittaa saunan päälle!!'),
     ('2015-10-17 23:13', NULL, 16, 3, 'Tarviin sorkkiksen', 'Olen hävittänyt sorkkaraudan, viittikö lainaa yhtä?'),
     ('2015-10-17 11:12', NULL, 6, 2, 'Aloitetaan keikka!', 'Postiryöstökeikalla on jo tarpeeks jengii, voidaan alottaa heti!'),

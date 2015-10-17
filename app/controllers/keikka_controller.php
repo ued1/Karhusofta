@@ -26,8 +26,12 @@ class KeikkaController extends BaseController {
 
     public static function nayta($keikkaid) {
         $keikka = Keikka::etsi($keikkaid);
+        if(!$keikka) {
+            $keikka = Keikka::hae_vanha($keikkaid);
+        }
         $keikka->lisaa_ilmoittautumistieto();
-        View::make('keikka/keikka.html', array('keikka' => $keikka));
+        $osallistumiset = Osallistuminen::osallistumistiedot($keikkaid);
+        View::make('keikka/keikka.html', array('keikka' => $keikka, 'osallistumiset' => $osallistumiset));
     }
     
     public static function aloita($keikkaid) {
@@ -138,6 +142,19 @@ class KeikkaController extends BaseController {
         } else {
             View::make('keikka/kirjaus.html', array('virheet' => $virheet, 'keikka' => $keikka));
         }
+    }
+    
+    public static function poista($keikkaid) {
+        $keikka = Keikka::etsi($keikkaid);
+        if(!self::get_user_logged_in()->admin && $keikka->karhuid != $_SESSION['karhuid']) {
+            Redirect::to('/keikat', array('virhe' => 'Sinun täytyy olla admin tai keikan ryhmänjohtaja poistaaksesi keikan'));
+        } else if($keikka->suoritettu || $keikka->paikka) {
+            Redirect::to('/keikat', array('virhe' => 'Et voi poistaa keikkaa, koska se on alkanut tai suoritettu.'));
+        } else {
+            $keikka->poista();
+            Redirect::to('/keikat', array('viesti' => 'Keikka poistettu onnistuneesti!'));
+        }
+        
     }
 
 }

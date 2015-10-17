@@ -135,7 +135,7 @@ class Karhu extends BaseModel {
         if ($this->tunnus == '') {
             $virheet[] = 'Karhulla tulee olla tunnus!';
         } elseif (!$this->merkkijono_tarpeeksi_pitka($this->tunnus, 3) || !$this->merkkijono_tarpeeksi_lyhyt($this->tunnus, 20)) {
-            $virheet[] = 'Karhun tunnuksen tulee olla 5-20 merkkiä pitkä!';
+            $virheet[] = 'Karhun tunnuksen tulee olla 3-20 merkkiä pitkä!';
         } elseif (self::onko_tunnus_olemassa($this->tunnus)) {
             $virheet[] = 'Tunnus on jo käytössä! Valitse uusi tunnus.';
         }
@@ -161,7 +161,7 @@ class Karhu extends BaseModel {
     }
     
     public static function karhun_johdettavat_keikat($karhuid) {
-        $kysely = DB::connection()->prepare('SELECT keikkaid FROM Keikka WHERE karhuid = :karhuid');
+        $kysely = DB::connection()->prepare('SELECT keikkaid FROM Keikka WHERE karhuid = :karhuid AND keikka.suoritettu is null');
         $kysely->execute(array('karhuid' => $karhuid));
         $rivit = $kysely->fetchAll();
         return self::muuta_rivit_keikoiksi($rivit);
@@ -171,8 +171,10 @@ class Karhu extends BaseModel {
         $keikat = array();
         foreach ($rivit as $rivi) {
             $keikka = Keikka::etsi($rivi['keikkaid']);
-            $keikka->lisaa_ilmoittautumistieto();
-            $keikat[] = $keikka;
+            if($keikka) {
+                $keikka->lisaa_ilmoittautumistieto();
+                $keikat[] = $keikka;
+            }
         }
         return $keikat;
     }

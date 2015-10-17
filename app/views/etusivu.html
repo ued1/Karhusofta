@@ -54,7 +54,7 @@
             {% if keikka.ilmoittautuneita >= keikka.osallistujamaara and keikka.paikka is null %}
                 <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}  </a><span class="label label-info">Voit aloittaa tämän keikan sivulla <a href="{{base_path}}/keikat">Keikat</a></span></li>
             {% else %}
-                <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a> <small>- ilmoittautuneita {{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</small></li>
             {% endif %}
         {% endfor %}
         </ul>
@@ -65,7 +65,7 @@
         <ul>
         {% for keikka in keikat %}
             {% if user_logged_in.karhuid != keikka.karhuid %}
-            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></li>
+            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a> <small>- ilmoittautuneita {{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</small></li>
             {% endif %}
         {% endfor %}
         </ul>

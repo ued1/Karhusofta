@@ -14,7 +14,6 @@ class Keikka extends BaseModel {
         $kysely->execute();
         $rivit = $kysely->fetchAll();
         $keikat = array();
-
         foreach ($rivit as $rivi) {
             $keikat[] = new Keikka(array(
                 'keikkaid' => $rivi['keikkaid'],
@@ -59,6 +58,26 @@ class Keikka extends BaseModel {
         }
         return null;
     }
+    
+    public static function hae_vanha($keikkaid) {
+        $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, suoritettu, kommentti, saalis, paikka, johtaja FROM Keikka WHERE keikkaid = :keikkaid LIMIT 1');
+        $kysely->execute(array('keikkaid' => $keikkaid));
+        $rivi = $kysely->fetch();
+
+        if ($rivi) {
+            $keikka = new Keikka(array(
+                'keikkaid' => $rivi['keikkaid'],
+                'nimi' => $rivi['nimi'],
+                'suoritettu' => $rivi['suoritettu'],
+                'kommentti' => $rivi['kommentti'],
+                'saalis' => $rivi['saalis'],
+                'paikka' => $rivi['paikka'],
+                'johtaja' => $rivi['johtaja']
+            ));
+            return $keikka;
+        }
+        return null;
+    }
 
     public static function onko_keikkaa_nimella($hakusana) {
         $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE nimi = :hakusana');
@@ -90,6 +109,11 @@ class Keikka extends BaseModel {
         $rivi = $kysely->fetch();
         $this->keikkaid = $rivi['keikkaid'];
         self::ilmoittaudu($this->keikkaid, $this->karhuid, $rooliid);
+    }
+    
+    public function poista() {
+        $kysely = DB::connection()->prepare('DELETE FROM Keikka WHERE keikkaid = :keikkaid');
+        $kysely->execute(array('keikkaid' => $this->keikkaid));
     }
     
     public function validoi_nimi() {
@@ -207,7 +231,7 @@ class Keikka extends BaseModel {
     }
 
     public static function keikat_paattyneet() {
-        $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, osallistujamaara, paikka, suoritettu, kommentti, saalis FROM Keikka WHERE (suoritettu is not null OR kommentti is not null)');
+        $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, osallistujamaara, paikka, suoritettu, kommentti, saalis FROM Keikka WHERE (suoritettu is not null OR kommentti is not null) ORDER BY suoritettu DESC');
         $kysely->execute();
         $rivit = $kysely->fetchAll();
         $keikat = array();

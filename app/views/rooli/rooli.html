@@ -15,16 +15,16 @@
 {% endif %}
 
 <h2>Rooli: {{rooli.nimi}}</h2>
-
-<p><strong>Kuvaus:</strong> {{rooli.kuvaus}}</p>
-<p><strong>Vaativuuskerroin:</strong> {{rooli.vaativuuskerroin}}</p>
 {% if user_logged_in.admin %}
 <p>
     {{lomakkeet.poista_nappi("#{base_path}/roolit/#{rooli.rooliid}/poista")}}
     <a href="{{base_path}}/roolit/{{rooli.rooliid}}/muokkaa" class="btn btn-default">Muokkaa</a>
 </p>
-{% endif%}
-<p>
+{% endif %}
+<p><strong>Kuvaus:</strong> {{rooli.kuvaus}}</p>
+<p><strong>Vaativuuskerroin:</strong> {{rooli.vaativuuskerroin}}</p>
+
+<p><br>
     <a href="{{base_path}}/roolit" class="btn btn-default">Takaisin</a>
 </p>
 

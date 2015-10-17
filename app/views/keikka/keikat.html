@@ -94,7 +94,7 @@
     <tbody>
         {% for keikka in vanhat_keikat %}
             <tr>
-                <td><a href="#">{{keikka.nimi}}</a></td>
+                <td><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a></td>
                 <td>{{keikka.suoritettu}}</td>
                 <td>{{keikka.paikka}}</td>
                 <td>{{keikka.osallistujamaara}}</td>

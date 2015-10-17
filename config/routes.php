@@ -132,6 +132,10 @@ $routes->post('/keikat/:keikkaid/ilmoittautuminen/peru', 'tarkista_onko_kirjautu
     KeikkaController::peru_ilmoittautuminen($keikkaid);
 });
 
+$routes->post('/keikat/:keikkaid/poista', 'tarkista_onko_kirjautunut', function($keikkaid) {
+    KeikkaController::poista($keikkaid);
+});
+
 $routes->get('/keikat/:keikkaid', 'tarkista_onko_kirjautunut', function($keikkaid) {
     KeikkaController::nayta($keikkaid);
 });

@@ -16,24 +16,22 @@
 
 <h2>{{karhu.nimi}}</h2>
 {% if user_logged_in.admin %}
-<p><strong>Tunnus:</strong> {{karhu.tunnus}}</p>
+    {{lomakkeet.poista_nappi("#{base_path}/karhut/#{karhu.karhuid}/poista")}}
+    <a href="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa" class="btn btn-default">Muokkaa</a>
+    <p><br><strong>Tunnus:</strong> {{karhu.tunnus}}</p>
 {% endif %}
 <p><strong>Liittymispäivä:</strong> {{karhu.pvm}}</p>
 <p><strong>Saldo:</strong> {{karhu.saldo}}</p>
 <p><strong>Taidot:</strong></p>
 <p>
-{% if karhu.taidot %}
-    {% for taito in karhu.taidot %}
-        {{taito.nimi}}<br>
-    {% endfor %}
-{% endif %}
+    {% if karhu.taidot %}
+        {% for taito in karhu.taidot %}
+            {{taito.nimi}}<br>
+        {% endfor %}
+    {% endif %}
 </p>
 
 <p>
-    {% if user_logged_in.admin %}
-    {{lomakkeet.poista_nappi("#{base_path}/karhut/#{karhu.karhuid}/poista")}}
-    <a href="{{base_path}}/karhut/{{karhu.karhuid}}/muokkaa" class="btn btn-default">Muokkaa</a>
-    {% endif %}
     <a href="{{base_path}}/viestit/uusi/{{karhu.karhuid}}" class="btn btn-default">Lähetä viesti</a>
 </p>
 

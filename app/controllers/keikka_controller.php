@@ -131,13 +131,21 @@ class KeikkaController extends BaseController {
         $keikka = Keikka::etsi($keikkaid);
         $keikka->saalis = $parametrit['saalis'];
         $keikka->kommentti = $parametrit['kommentti'];
-        $virheet = $keikka->validoi_tulos($parametrit['saalis']);
-        if (count($virheet) == 0) {
+        $virheet = $keikka->validoi_tulos(is_numeric($parametrit['saalis']));
+        $onko_numero = !(is_numeric($parametrit['saalis']));
+        if (count($virheet) == 0 && !$onko_numero) {
             $keikka->kirjaa_tulos($_SESSION['karhuid']);
             Kassa::maksa_keikan_palkka($keikkaid);
-            Redirect::to('/keikat', array('viesti' => 'Keikan tulos kirjattu ja palkat maksettu osallistujille!'));
-        } else {
-            View::make('keikka/kirjaus.html', array('virheet' => $virheet, 'keikka' => $keikka));
+            if($keikka->saalis == 0) {
+                $viesti = 'Keikan tulos kirjattu. Keikka epäonnistui, koska saalista ei saatu.'; 
+            } else {
+                $saldo = Karhu::etsi($_SESSION['karhuid'])->saldo;
+                $viesti = 'Keikan tulos kirjattu ja palkat maksettu osallistujille! Kokonaissaldosi on nyt ' . $saldo;
+            }
+            
+            Redirect::to('/keikat', array('viesti' => $viesti));
+        } else {            
+            View::make('keikka/kirjaus.html', array('virheet' => $virheet, 'keikka' => $keikka, 'onko_numero' => $onko_numero));
         }
     }
 

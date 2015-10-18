@@ -53,7 +53,7 @@ CREATE TABLE Osallistuminen(
 CREATE TABLE Chat(
     chatviestiID SERIAL PRIMARY KEY,
     aika TIMESTAMP NOT NULL,
-    viesti varchar(320) NOT NULL,
+    viesti varchar(100) NOT NULL,
     karhuID INTEGER REFERENCES Karhu(karhuID) ON DELETE CASCADE
 );
 

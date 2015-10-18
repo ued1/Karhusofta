@@ -8,6 +8,10 @@
     {{virheet_makro.listaa_virheet(virheet)}}
 {% endif %}
 
+{% if onko_numero %}
+    <div class="alert alert-danger">Saaliin täytyy olla kokonaisluku!</div>
+{% endif %}
+
 <p><br>Keikka: <strong>{{keikka.nimi}}</strong></p>
 <p>Kohteeseen: <strong>{{keikka.paikka}}</strong></p>
 <p>Arvio saaliista: <strong>{{keikka.kohdearvo}}</strong></p>

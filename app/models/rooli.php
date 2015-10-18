@@ -114,10 +114,12 @@ class Rooli extends BaseModel {
 
     public function validoi_maksimimaara() {
         $virheet = array();
-        if ($this->vaativuuskerroin == '') {
+        if ($this->maksimimaara == '') {
             $virheet[] = 'Maksimimäärä ei voi olla tyhjä!';
-        } elseif (!is_numeric($this->vaativuuskerroin) || !ctype_digit($this->vaativuuskerroin) || $this->vaativuuskerroin < 1) {
+        } elseif (!is_numeric($this->maksimimaara) || !ctype_digit($this->maksimimaara) || $this->maksimimaara < 1) {
             $virheet[] = 'Maksimimäärän tulee olla positiivinen kokonaisluvu, joka on vähintään 1.';
+        } else if($this->maksimimaara > 10000) {
+            $virheet[] = 'Maksimimäärä ei ole realistinen...';
         }
         return $virheet;
     }

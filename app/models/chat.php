@@ -44,8 +44,8 @@ class Chatviesti extends BaseModel {
 
     public static function validoi_viesti($teksti) {
         $virheet = array();
-        if ($teksti == null || $teksti == '' || strlen($teksti) > 320) {
-            $virheet[] = 'Viestin tulee olla 1-320 merkkiä pitkä!';
+        if ($teksti == null || $teksti == '' || strlen($teksti) > 100) {
+            $virheet[] = 'Viestin tulee olla 1-100 merkkiä pitkä!';
         }
         return $virheet;
     }

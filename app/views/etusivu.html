@@ -34,6 +34,10 @@
     <div class="alert alert-success">Olet kirjautunut sisään, {{user_logged_in.nimi}}</div>
     {% endif %}
     
+    {% if user_logged_in.saldo > 0 %}
+    <h4>Olet tienannut yhteensä: {{user_logged_in.saldo}}</h4>
+    {% endif %}
+    
     {% if uudetviestit %}
         {% if lkm == 1 %}
             <h4>Sinulle on 1 uusi viesti:</h4>

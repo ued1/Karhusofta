@@ -146,7 +146,7 @@ class Keikka extends BaseModel {
         if ($this->saalis == 0) {
             return $virheet;
         }
-        if (!$this->saalis || !is_numeric($this->saalis)) {
+        if (!$this->saalis) {
             $virheet[] = 'Saalis tulee ilmaista kokonaisluvulla, joka on vähintään nolla.';
         } elseif ($this->saalis == '') {
             $virheet[] = 'Saalis ei voi olla tyhjä.';
@@ -154,7 +154,7 @@ class Keikka extends BaseModel {
             $virheet[] = 'Saaliin tulee olla kokonaisluku, joka on vähintään nolla.';
         } elseif ($this->saalis > 200000000) {
             $virheet[] = 'Jos summa todella on yli 200 miljoonaa, voit kirjata sen 200 miljoonana ja pitää loput itselläsi';
-        }
+        } 
         if ($this->kommentti && !$this->merkkijono_tarpeeksi_lyhyt($this->kommentti, 100)) {
             $virheet[] = 'Kommentti voi olla korkeintaan 100 merkkiä pitkä.';
         }

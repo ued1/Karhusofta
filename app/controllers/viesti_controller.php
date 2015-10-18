@@ -30,11 +30,15 @@ class ViestiController extends BaseController {
             'otsikko' => $parametrit['otsikko'],
             'saajaid' => $parametrit['saajaid'],
             'viesti' => $parametrit['viesti'],
-            'saajanimi' => Karhu::etsi($parametrit['saajaid'])->nimi
+            'saajanimi' => null
         );
         $viesti = new Viesti($attribuutit);
         $virheet = $viesti->virheet();
+        if($attribuutit['saajaid'] && $attribuutit['saajaid'] > 0) {
+           $attribuutit['saajanimi'] = Karhu::etsi($parametrit['saajaid'])->nimi; 
+        }
         if (count($virheet) == 0) {
+            
             $viesti->tallenna($_SESSION['karhuid']);
             Redirect::to('/viestit', array('viesti' => 'Viesti lähetetty!'));
         } else {
@@ -57,7 +61,7 @@ class ViestiController extends BaseController {
     public static function nayta($viestiid) {
         $uusiviesti = Viesti::etsi($viestiid);
         if ($uusiviesti != null && $uusiviesti->onko_lukuoikeus($_SESSION['karhuid'])) {
-            if ($uusiviesti->lukemisaika == null) {
+            if ($uusiviesti->lukemisaika == null && $uusiviesti->saajaid == $_SESSION['karhuid']) {
                 $uusiviesti->aseta_luetuksi();
                 self::count_uudet_viestit();
             }

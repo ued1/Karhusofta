@@ -44,19 +44,19 @@ class Rooli extends BaseModel {
         }
         return null;
     }
-    
+
     public function tallenna() {
         $kysely = DB::connection()->prepare('INSERT INTO Rooli (nimi, kuvaus, vaativuuskerroin, maksimimaara) VALUES (:nimi, :kuvaus, :vaativuuskerroin, :maksimimaara) RETURNING rooliid');
         $kysely->execute(array('nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin, 'maksimimaara' => $this->maksimimaara));
         $rivi = $kysely->fetch();
         $this->rooliid = $rivi['rooliid'];
     }
-    
+
     public function paivita() {
         $kysely = DB::connection()->prepare('UPDATE Rooli SET nimi = :nimi, kuvaus = :kuvaus, vaativuuskerroin = :vaativuuskerroin, maksimimaara = :maksimimaara WHERE rooliid = :rooliid');
         $kysely->execute(array('rooliid' => $this->rooliid, 'nimi' => $this->nimi, 'kuvaus' => $this->kuvaus, 'vaativuuskerroin' => $this->vaativuuskerroin, 'maksimimaara' => $this->maksimimaara));
     }
-    
+
     public static function poista($rooliid) {
         $kysely = DB::connection()->prepare('DELETE FROM Rooli WHERE rooliid = :rooliid');
         $kysely->execute(array('rooliid' => $rooliid));
@@ -76,20 +76,20 @@ class Rooli extends BaseModel {
         }
         return $taidot;
     }
-    
+
     public static function lisaa_karhulle_roolit($karhuid, $roolit) {
-        foreach($roolit as $rooliid) {
+        foreach ($roolit as $rooliid) {
             $kysely = DB::connection()->prepare('INSERT INTO Osaaminen (karhuid, rooliid) VALUES (:karhuid, :rooliid)');
             $kysely->execute(array('karhuid' => $karhuid, 'rooliid' => $rooliid));
         }
     }
-    
+
     public static function muokkaa_karhun_rooleja($karhuid, $roolit) {
         $kysely = DB::connection()->prepare('DELETE FROM Osaaminen WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $karhuid));
         self::lisaa_karhulle_roolit($karhuid, $roolit);
     }
-    
+
     public function validoi_nimi() {
         $virheet = array();
         if (is_numeric($this->nimi)) {
@@ -111,7 +111,7 @@ class Rooli extends BaseModel {
         }
         return $virheet;
     }
-    
+
     public function validoi_maksimimaara() {
         $virheet = array();
         if ($this->vaativuuskerroin == '') {

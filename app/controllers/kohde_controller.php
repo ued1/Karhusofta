@@ -38,7 +38,7 @@ class KohdeController extends BaseController {
             View::make('kohde/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
         }
     }
-    
+
     public static function paivita($kohdeid) {
         $parametrit = $_POST;
         $attribuutit = array(
@@ -50,17 +50,17 @@ class KohdeController extends BaseController {
         );
         $kohde = new Kohde($attribuutit);
         $virheet = $kohde->virheet();
-        if(count($virheet) == 0) {
+        if (count($virheet) == 0) {
             $kohde->paivita();
             Redirect::to('/kohteet/' . $kohdeid, array('viesti' => 'Kohdetta on muokattu onnistuneesti!'));
         } else {
             View::make('kohde/muokkaus.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
         }
     }
-    
+
     public static function poista($kohdeid) {
         $kohde = new Kohde(array('kohdeid' => $kohdeid));
-        if($kohde->voiko_poistaa()) {
+        if ($kohde->voiko_poistaa()) {
             $kohde->poista();
             Redirect::to('/kohteet', array('viesti' => 'Kohde poistettu onnistuneesti!'));
         } else {
@@ -68,5 +68,5 @@ class KohdeController extends BaseController {
             View::make('kohde/kohde.html', array('kohde' => $alkuperainen_kohde, 'virhe' => 'Kohdetta ei voi poistaa, koska siihen on meneillään keikka.'));
         }
     }
-    
+
 }

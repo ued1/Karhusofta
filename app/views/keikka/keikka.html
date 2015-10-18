@@ -15,14 +15,18 @@
     <br>
 </p>
 {% endif %}
-{% if keikka.kohdeid and keikka.karhuid %}
+{% if keikka.kohdeid and keikka.karhuid and keikka.suoritettu is null %}
 <p><br><strong>Kohde: </strong> <a href="{{base_path}}/kohteet/{{keikka.kohdeid}}">{{keikka.kohdenimi}}</a></p>
 <p><strong>Arvio saaliista: </strong>{{keikka.kohdearvo}}</p>
 <p><strong>Ryhmänjohtaja: </strong> <a href="{{base_path}}/karhut/{{keikka.karhuid}}">{{keikka.karhunimi}}</a></p>
 <p><strong>Ilmoittautuneita: </strong>{{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</p>
 {% else %}
 <p><br><strong>Kohde: </strong>{{keikka.paikka}}</p>
+<p><strong>Osallistuneet: </strong>{{keikka.osallistujamaara}}</p>
+<p><strong>Ryhmänjohtaja: </strong>{{keikka.johtaja}}</p>
+<p><strong>Suorituspäivämäärä: </strong>{{keikka.suoritettu}}</p>
 <p><strong>Saalis: </strong>{{keikka.saalis}}</p>
+<p><strong>Kommentti: </strong>{{keikka.kommentti}}</p>
 {% endif %}
 
 {% if osallistumiset %}

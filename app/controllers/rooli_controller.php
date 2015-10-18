@@ -38,8 +38,7 @@ class RooliController extends BaseController {
             View::make('rooli/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
         }
     }
-    
-    
+
     public static function paivita($rooliid) {
         $parametrit = $_POST;
         $attribuutit = array(
@@ -51,17 +50,17 @@ class RooliController extends BaseController {
         );
         $rooli = new Rooli($attribuutit);
         $virheet = $rooli->virheet();
-        if(count($virheet) == 0) {
+        if (count($virheet) == 0) {
             $rooli->paivita();
             Redirect::to('/roolit/' . $rooliid, array('viesti' => 'Roolia on muokattu onnistuneesti!'));
         } else {
             View::make('rooli/muokkaus.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit));
         }
     }
-    
+
     public static function poista($rooliid) {
         Rooli::poista($rooliid);
         Redirect::to('/roolit', array('viesti' => 'Rooli poistettu onnistuneesti!'));
     }
-    
+
 }

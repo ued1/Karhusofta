@@ -53,6 +53,8 @@
         {% for keikka in johdettavat_keikat %}
             {% if keikka.ilmoittautuneita >= keikka.osallistujamaara and keikka.paikka is null %}
                 <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}  </a><span class="label label-info">Voit aloittaa tämän keikan sivulla <a href="{{base_path}}/keikat">Keikat</a></span></li>
+            {% elseif keikka.paikka %}
+                <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}  </a><span class="label label-warning">Keikka käynnissä, kirjaa tulos sivulla <a href="{{base_path}}/keikat">Keikat</a></span></li>
             {% else %}
             <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a> <small>- ilmoittautuneita {{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</small></li>
             {% endif %}
@@ -65,7 +67,11 @@
         <ul>
         {% for keikka in keikat %}
             {% if user_logged_in.karhuid != keikka.karhuid %}
-            <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a> <small>- ilmoittautuneita {{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</small></li>
+                {% if keikka.paikka %}
+                <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a> <span class="label label-warning">Keikka käynnissä</span></li>
+                {% else %}
+                <li><a href="{{base_path}}/keikat/{{keikka.keikkaid}}">{{keikka.nimi}}</a> <small>- ilmoittautuneita {{keikka.ilmoittautuneita}}/{{keikka.osallistujamaara}}</small></li>
+                {% endif %}
             {% endif %}
         {% endfor %}
         </ul>

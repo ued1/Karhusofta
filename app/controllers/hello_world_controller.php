@@ -5,7 +5,7 @@ class HelloWorldController extends BaseController {
     public static function index() {
         // make-metodi renderöi app/views-kansiossa sijaitsevia tiedostoja
         //  View::make('home.html');
-        echo 'Etusivu';
+//        echo 'Etusivu';
     }
 
     public static function sandbox() {
@@ -13,8 +13,8 @@ class HelloWorldController extends BaseController {
         //$karhut = Karhu::kaikki();
         //Kint::dump($karhut);
         //Kint::dump($ekakarhu);
-        $luku = 1;
-        echo Rooli::karhun_taidot($luku);
+//        $luku = 1;
+//        echo Rooli::karhun_taidot($luku);
         
         
         

@@ -51,23 +51,23 @@ class Kohde extends BaseModel {
         $rivi = $kysely->fetch();
         $this->kohdeid = $rivi['kohdeid'];
     }
-    
+
     public function paivita() {
         $kysely = DB::connection()->prepare('UPDATE Kohde SET nimi = :nimi, osoite = :osoite, kuvaus = :kuvaus, arvo = :arvo WHERE kohdeid = :kohdeid');
         $kysely->execute(array('kohdeid' => $this->kohdeid, 'nimi' => $this->nimi, 'osoite' => $this->osoite, 'kuvaus' => $this->kuvaus, 'arvo' => $this->arvo));
     }
-    
+
     public function voiko_poistaa() {
         // kohteen voi poistaa vain, jos kyseiseen kohteeseen ei ole keikka käynnissä
         $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE kohdeid = :kohdeid AND suoritettu is null');
         $kysely->execute(array('kohdeid' => $this->kohdeid));
         $rivi = $kysely->fetch();
-        if($rivi) {
+        if ($rivi) {
             return FALSE;
         }
         return TRUE;
     }
-    
+
     public function poista() {
         $kysely = DB::connection()->prepare('DELETE FROM Kohde WHERE kohdeid = :kohdeid');
         $kysely->execute(array('kohdeid' => $this->kohdeid));
@@ -91,6 +91,8 @@ class Kohde extends BaseModel {
             $virheet[] = 'Kohteen arvo tulee ilmaista positiivisella kokonaisluvulla!';
         } elseif ($this->arvo < 100) {
             $virheet[] = 'Kohde ei ole ryöstämisen arvoinen jos saalis on alle 100!';
+        } elseif ($this->arvo > 200000000) {
+            $virheet[] = 'Tuo ei ole enää realistista, taidat yliarvioida arvon...';
         }
         return $virheet;
     }

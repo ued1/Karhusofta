@@ -94,7 +94,10 @@ INSERT INTO Kohde (nimi, osoite, kuvaus, arvo) VALUES
     ('Pankkiautomaatti 2', 'Ankkalinnan ostari', NULL, 10000),
     ('Hanhivaaran kaupungintalo', 'Jossain keskustassa', NULL, 50000),
     ('Mummo kadulla', 'Katu', NULL, 1000),
-    ('Pajaluokka', 'Exactum', 'Paljon vanhoja tietokoneita', 1000);
+    ('Pajaluokka', 'Exactum', 'Paljon vanhoja tietokoneita', 1000),
+    ('Kukkakauppa', 'Kukkakatu 7', 'Vähän rahaa kassalla', 400),
+    ('Ankkalinnan vankila', 'Vankilakatu 2', 'Pöllitään vartijoiden lompakot', 2000),
+    ('Ilmalaiva', 'Ilmassa', 'Pitää ensin pölliä lentävä pakoauto', 5000);
 
 INSERT INTO Keikka (nimi, osallistujamaara, kohdeID, karhuID, suoritettu, kommentti, saalis, paikka, johtaja) VALUES
     ('Postiryöstö hanhivaaraan', 6, 3, 2, NULL, NULL, NULL, NULL, NULL),
@@ -106,7 +109,10 @@ INSERT INTO Keikka (nimi, osallistujamaara, kohdeID, karhuID, suoritettu, kommen
     ('Koruliikkeen tehjennys', 5, null, null, '2015-8-6', 'Hyvin onnistunut keikka', 80000, 'Ankkalinnan koruliike', 'Kovanaama'),
     ('Vanhan pankin ryöstö', 5, null, null, '2014-11-2', 'Hyvin meni!', 50000, 'Vanha pankki', 'Eläkeläinen'),
     ('Roopen rahasäiliön tyhjennys', 20, null, null, '2015-1-2', 'Kaikki jänistivät', 0, 'Roopen rahasäiliö', 'Erotettukarhu'),
-    ('Pankkiautomaattikeikka', 3, 10, 1, NULL, NULL, NULL, NULL, NULL);
+    ('Pankkiautomaattikeikka', 3, 10, 1, NULL, NULL, NULL, NULL, NULL),
+    ('Kukkakaupan putsaus', 4, 14, 1, NULL, NULL, NULL, 'Kukkakauppa', NULL),
+    ('Ryöstökeikka vankilaan', 6, 15, 3, NULL, NULL, NULL, 'Ankkalinnan vankila', NULL),
+    ('Hyökkäys ilmalaivaan', 5, 16, 2, NULL, NULL, NULL, 'Ilmalaiva', NULL);
 
 INSERT INTO Osallistuminen (keikkaID, karhuID, rooliID) VALUES
     (1, 1, 2),
@@ -132,7 +138,22 @@ INSERT INTO Osallistuminen (keikkaID, karhuID, rooliID) VALUES
     (6, 8, 7),
     (10, 1, 3),
     (10, 8, 1),
-    (10, 14, 4);
+    (10, 14, 4),
+    (11, 1, 2),
+    (11, 12, 3),
+    (11, 14, 4),
+    (11, 15, 6),
+    (12, 3, 4),
+    (12, 7, 3),
+    (12, 9, 3),
+    (12, 11, 7),
+    (12, 15, 2),
+    (12, 16, 8),
+    (13, 2, 6),
+    (13, 3, 3),
+    (13, 4, 7),
+    (13, 11, 1),
+    (13, 12, 4);
 
 INSERT INTO Chat (karhuid, aika, viesti) VALUES
     (4, '2015-8-7 13:44', 'KÄÄK! Unohdin sorkkaraudan keikkapaikalle'),

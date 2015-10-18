@@ -29,7 +29,7 @@ class Viesti extends BaseModel {
         }
         return $saapuneet;
     }
-    
+
     public static function uudetviestit($karhuid) {
         $kysely = DB::connection()->prepare("SELECT viestiid, to_char(lahetysaika, 'YYYY-MM-DD HH24:MI') as lahetetty, lahettajaid, otsikko, viesti FROM Viesti WHERE saajaid = :saajaid AND lukemisaika is null ORDER BY lahetetty DESC");
         $kysely->execute(array('saajaid' => $karhuid));
@@ -47,14 +47,14 @@ class Viesti extends BaseModel {
         }
         return $uudet;
     }
-    
+
     public static function laske_uudet_viestit($karhuid) {
         $kysely = DB::connection()->prepare('SELECT count(*) as lkm FROM Viesti WHERE saajaid = :saajaid AND lukemisaika is null LIMIT 1');
         $kysely->execute(array('saajaid' => $karhuid));
         $rivi = $kysely->fetch();
         return $rivi['lkm'];
     }
-    
+
     public static function etsi($viestiid) {
         $kysely = DB::connection()->prepare("SELECT viestiid, to_char(lahetysaika, 'YYYY-MM-DD HH24:MI') as lahetetty, to_char(lukemisaika, 'YYYY-MM-DD HH24:MI') as luettu, saajaid, lahettajaid, otsikko, viesti FROM Viesti WHERE viestiid = :viestiid LIMIT 1");
         $kysely->execute(array('viestiid' => $viestiid));
@@ -75,7 +75,7 @@ class Viesti extends BaseModel {
         }
         return null;
     }
-    
+
     public static function lahetetyt($karhuid) {
         $kysely = DB::connection()->prepare("SELECT viestiid, to_char(lahetysaika, 'YYYY-MM-DD HH24:MI') as lahetetty, to_char(lukemisaika, 'YYYY-MM-DD HH24:MI') as luettu, saajaid, otsikko, viesti FROM Viesti WHERE lahettajaid = :lahettajaid ORDER BY lahetetty DESC");
         $kysely->execute(array('lahettajaid' => $karhuid));
@@ -96,29 +96,29 @@ class Viesti extends BaseModel {
         }
         return $saapuneet;
     }
-        
+
     public function tallenna($karhuid) {
         $kysely = DB::connection()->prepare('INSERT INTO Viesti (lahetysaika, lahettajaid, saajaid, otsikko, viesti) VALUES (now(), :karhuid, :saajaid, :otsikko, :viesti)');
         $kysely->execute(array('karhuid' => $karhuid, 'saajaid' => $this->saajaid, 'otsikko' => $this->otsikko, 'viesti' => $this->viesti));
     }
-            
+
     public function poista($karhuid) {
         $poistettava = Viesti::etsi($this->viestiid);
-        if($poistettava->saajaid == $karhuid) {
+        if ($poistettava->saajaid == $karhuid) {
             $kysely = DB::connection()->prepare('DELETE FROM Viesti WHERE viestiid = :viestiid');
             $kysely->execute(array('viestiid' => $this->viestiid));
             return TRUE;
         }
         return FALSE;
     }
-    
+
     public function onko_lukuoikeus($karhuid) {
-        if($this->lahettajaid == $karhuid || $this->saajaid == $karhuid) {
+        if ($this->lahettajaid == $karhuid || $this->saajaid == $karhuid) {
             return TRUE;
         }
         return FALSE;
     }
-    
+
     public function aseta_luetuksi() {
         $kysely = DB::connection()->prepare('UPDATE Viesti SET lukemisaika = now() WHERE viestiid = :viestiid');
         $kysely->execute(array('viestiid' => $this->viestiid));
@@ -131,7 +131,7 @@ class Viesti extends BaseModel {
         }
         return $virheet;
     }
-    
+
     public function validoi_sisalto() {
         $virheet = array();
         if ($this->viesti == null || $this->viesti == '' || strlen($this->viesti) > 500) {
@@ -139,17 +139,15 @@ class Viesti extends BaseModel {
         }
         return $virheet;
     }
-    
+
     public function validoi_vastaanottaja() {
         $virheet = array();
-        if($this->saajaid == null || $this->saajaid == 0) {
+        if ($this->saajaid == null || $this->saajaid == 0) {
             $virheet[] = 'Viestillä tulee olla vastaanottaja!';
-        } else if(Karhu::etsi($this->saajaid) == null) {
+        } else if (Karhu::etsi($this->saajaid) == null) {
             $virheet[] = 'Vastaanottajaa ei ole olemassa!';
         }
         return $virheet;
     }
-            
-
 
 }

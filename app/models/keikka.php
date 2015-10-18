@@ -2,11 +2,11 @@
 
 class Keikka extends BaseModel {
 
-    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi, $rosvoporukka, $suoritettu, $kommentti, $saalis, $paikka;
+    public $keikkaid, $nimi, $osallistujamaara, $ilmoittautuneita, $kayttaja_keikalla, $kohdeid, $kohdenimi, $kohdearvo, $karhuid, $karhunimi, $suoritettu, $kommentti, $saalis, $paikka, $johtaja;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validoi_nimi', 'validoi_osallistujamaara', 'validoi_valinnat', 'tarkista_osallistujat');
+        $this->validators = array('validoi_nimi', 'validoi_osallistujamaara', 'validoi_valinnat');
     }
 
     public static function kaikki() {
@@ -15,8 +15,7 @@ class Keikka extends BaseModel {
         $rivit = $kysely->fetchAll();
         $keikat = array();
         foreach ($rivit as $rivi) {
-            $keikat[] = new Keikka(array(
-                'keikkaid' => $rivi['keikkaid'],
+            $keikat[] = new Keikka(array('keikkaid' => $rivi['keikkaid'],
                 'nimi' => $rivi['nimi'],
                 'osallistujamaara' => $rivi['osallistujamaara'],
                 'kohdeid' => $rivi['kohdeid'],
@@ -37,7 +36,6 @@ class Keikka extends BaseModel {
         $kysely = DB::connection()->prepare('SELECT keikkaid, keikka.nimi, keikka.osallistujamaara, kohde.kohdeid, kohde.nimi AS kohdenimi, kohde.arvo, karhu.nimi AS karhunimi, karhu.karhuid, suoritettu, kommentti, saalis, paikka, johtaja FROM Keikka, Kohde, Karhu WHERE keikkaid = :keikkaid AND keikka.kohdeid = kohde.kohdeid AND keikka.karhuid = karhu.karhuid LIMIT 1');
         $kysely->execute(array('keikkaid' => $keikkaid));
         $rivi = $kysely->fetch();
-
         if ($rivi) {
             $keikka = new Keikka(array(
                 'keikkaid' => $rivi['keikkaid'],
@@ -58,9 +56,9 @@ class Keikka extends BaseModel {
         }
         return null;
     }
-    
+
     public static function hae_vanha($keikkaid) {
-        $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, suoritettu, kommentti, saalis, paikka, johtaja FROM Keikka WHERE keikkaid = :keikkaid LIMIT 1');
+        $kysely = DB::connection()->prepare('SELECT keikkaid, nimi, osallistujamaara, suoritettu, kommentti, saalis, paikka, johtaja FROM Keikka WHERE keikkaid = :keikkaid LIMIT 1');
         $kysely->execute(array('keikkaid' => $keikkaid));
         $rivi = $kysely->fetch();
 
@@ -68,6 +66,7 @@ class Keikka extends BaseModel {
             $keikka = new Keikka(array(
                 'keikkaid' => $rivi['keikkaid'],
                 'nimi' => $rivi['nimi'],
+                'osallistujamaara' => $rivi['osallistujamaara'],
                 'suoritettu' => $rivi['suoritettu'],
                 'kommentti' => $rivi['kommentti'],
                 'saalis' => $rivi['saalis'],
@@ -102,7 +101,7 @@ class Keikka extends BaseModel {
         $kysely = DB::connection()->prepare('UPDATE Keikka SET suoritettu = now(), saalis = :saalis, kommentti = :kommentti, johtaja = (select nimi FROM Karhu WHERE karhuid = :karhuid LIMIT 1) WHERE keikkaid = :keikkaid');
         $kysely->execute(array('saalis' => $this->saalis, 'kommentti' => $this->kommentti, 'keikkaid' => $this->keikkaid, 'karhuid' => $karhuid));
     }
-        
+
     public function tallenna($rooliid) {
         $kysely = DB::connection()->prepare('INSERT INTO Keikka (nimi, osallistujamaara, kohdeid, karhuid) VALUES (:nimi, :osallistujamaara, :kohdeid, :karhuid) RETURNING keikkaid');
         $kysely->execute(array('nimi' => $this->nimi, 'osallistujamaara' => $this->osallistujamaara, 'kohdeid' => $this->kohdeid, 'karhuid' => $this->karhuid));
@@ -110,12 +109,12 @@ class Keikka extends BaseModel {
         $this->keikkaid = $rivi['keikkaid'];
         self::ilmoittaudu($this->keikkaid, $this->karhuid, $rooliid);
     }
-    
+
     public function poista() {
         $kysely = DB::connection()->prepare('DELETE FROM Keikka WHERE keikkaid = :keikkaid');
         $kysely->execute(array('keikkaid' => $this->keikkaid));
     }
-    
+
     public function validoi_nimi() {
         $virheet = array();
         if ($this->nimi == '' || !$this->merkkijono_tarpeeksi_lyhyt($this->nimi, 50)) {
@@ -136,18 +135,25 @@ class Keikka extends BaseModel {
             $virheet[] = 'Osallistujamäärän tulee olla kokonaisluku!';
         } elseif ($this->osallistujamaara < 3) {
             $virheet[] = 'Osallistujia täytyy olla vähintään kolme!';
+        } elseif ($this->osallistujamaara > 10000) {
+            $virheet[] = 'Osallistujia on liikaa, tuo ei ole enää realistista...';
         }
         return $virheet;
     }
 
     public function validoi_tulos() {
         $virheet = array();
+        if ($this->saalis == 0) {
+            return $virheet;
+        }
         if (!$this->saalis || !is_numeric($this->saalis)) {
             $virheet[] = 'Saalis tulee ilmaista kokonaisluvulla, joka on vähintään nolla.';
         } elseif ($this->saalis == '') {
             $virheet[] = 'Saalis ei voi olla tyhjä.';
         } elseif (!ctype_digit($this->saalis) || $this->saalis < 0) {
             $virheet[] = 'Saaliin tulee olla kokonaisluku, joka on vähintään nolla.';
+        } elseif ($this->saalis > 200000000) {
+            $virheet[] = 'Jos summa todella on yli 200 miljoonaa, voit kirjata sen 200 miljoonana ja pitää loput itselläsi';
         }
         if ($this->kommentti && !$this->merkkijono_tarpeeksi_lyhyt($this->kommentti, 100)) {
             $virheet[] = 'Kommentti voi olla korkeintaan 100 merkkiä pitkä.';
@@ -166,14 +172,6 @@ class Keikka extends BaseModel {
         return $virheet;
     }
 
-    public function tarkista_osallistujat() {
-        $virheet = array();
-        if ($this->rosvoporukka != null) {
-            
-        }
-        return $virheet;
-    }
-
     public function onko_keikalla_tilaa() {
         if ($this->osallistujamaara > self::osallistujia($this->keikkaid)) {
             return TRUE;
@@ -186,10 +184,6 @@ class Keikka extends BaseModel {
         $kysely->execute(array('keikkaid' => $keikkaid));
         $rivi = $kysely->fetch();
         return $rivi[0];
-    }
-
-    public function aseta_rosvoporukka($rosvoporukka) {
-        $this->rosvoporukka = $rosvoporukka;
     }
 
     public function lisaa_ilmoittautumistieto() {
@@ -218,7 +212,7 @@ class Keikka extends BaseModel {
     }
 
     public static function ilmoittaudu($keikkaid, $karhuid, $rooliid) {
-        if($rooliid == 0) {
+        if ($rooliid == 0) {
             $rooliid = NULL;
         }
         $kysely = DB::connection()->prepare('INSERT INTO Osallistuminen (keikkaid, karhuid, rooliid) VALUES (:keikkaid, :karhuid, :rooliid)');

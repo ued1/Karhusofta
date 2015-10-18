@@ -27,17 +27,16 @@ class Chatviesti extends BaseModel {
         return $viestit;
     }
 
-    
     public function tallenna() {
         $kysely = DB::connection()->prepare('INSERT INTO Chat (aika, viesti, karhuid) VALUES (now(), :viesti, :karhuid)');
         $kysely->execute(array('karhuid' => $this->karhuid, 'viesti' => $this->viesti));
     }
-            
+
     public function poista() {
         $kysely = DB::connection()->prepare('DELETE FROM Chat WHERE chatviestiid = :chatviestiid');
         $kysely->execute(array('chatviestiid' => $this->chatviestiid));
     }
-    
+
     public static function poista_kaikki() {
         $kysely = DB::connection()->prepare('DELETE FROM Chat');
         $kysely->execute();
@@ -50,6 +49,5 @@ class Chatviesti extends BaseModel {
         }
         return $virheet;
     }
-
 
 }

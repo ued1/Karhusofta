@@ -66,33 +66,33 @@ class Karhu extends BaseModel {
         $rivi = $kysely->fetch();
         $this->karhuid = $rivi['karhuid'];
     }
-    
+
     public function paivita() {
         $kysely = DB::connection()->prepare('UPDATE Karhu SET nimi = :nimi, tunnus = :tunnus, salasana = :salasana WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $this->karhuid, 'nimi' => $this->nimi, 'tunnus' => $this->tunnus, 'salasana' => $this->salasana));
     }
-    
+
     public function voiko_poistaa() {
         // karhun voi poistaa, jos hän ei ole meneillään olevalla keikalla ryhmänjohtajana
         $kysely = DB::connection()->prepare('SELECT nimi FROM Keikka WHERE karhuid = :karhuid AND suoritettu is null');
         $kysely->execute(array('karhuid' => $this->karhuid));
         $rivi = $kysely->fetch();
-        if($rivi) {
+        if ($rivi) {
             return FALSE;
         }
         return TRUE;
     }
-        
+
     public function poista() {
         $kysely = DB::connection()->prepare('DELETE FROM Karhu WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $this->karhuid));
     }
-    
+
     public static function tunnistaudu($tunnus, $salasana) {
         $kysely = DB::connection()->prepare('SELECT * FROM Karhu WHERE tunnus = :tunnus AND salasana = :salasana LIMIT 1');
         $kysely->execute(array('tunnus' => $tunnus, 'salasana' => $salasana));
         $rivi = $kysely->fetch();
-        if($rivi) {
+        if ($rivi) {
             $karhu = new Karhu($rivi);
             return $karhu;
         } else {
@@ -119,17 +119,17 @@ class Karhu extends BaseModel {
         }
         return $virheet;
     }
-    
+
     public static function onko_tunnus_olemassa($tunnus) {
         $kysely = DB::connection()->prepare('SELECT tunnus FROM Karhu WHERE tunnus = :tunnus LIMIT 1');
         $kysely->execute(array('tunnus' => $tunnus));
         $rivi = $kysely->fetch();
-        if($rivi) {
+        if ($rivi) {
             return TRUE;
         }
         return FALSE;
     }
-    
+
     public function validoi_tunnus() {
         $virheet = array();
         if ($this->tunnus == '') {
@@ -141,43 +141,41 @@ class Karhu extends BaseModel {
         }
         return $virheet;
     }
-    
-    
+
     public static function onko_karhu_keikalla($karhuid, $keikkaid) {
         $kysely = DB::connection()->prepare('SELECT keikkaid FROM Osallistuminen WHERE keikkaid = :keikkaid AND karhuid = :karhuid LIMIT 1');
         $kysely->execute(array('keikkaid' => $keikkaid, 'karhuid' => $karhuid));
         $rivi = $kysely->fetch();
-        if($rivi) {
+        if ($rivi) {
             return TRUE;
         }
         return FALSE;
     }
-    
+
     public static function karhun_keikat($karhuid) {
         $kysely = DB::connection()->prepare('SELECT keikkaid FROM Osallistuminen WHERE karhuid = :karhuid');
         $kysely->execute(array('karhuid' => $karhuid));
         $rivit = $kysely->fetchAll();
         return self::muuta_rivit_keikoiksi($rivit);
     }
-    
+
     public static function karhun_johdettavat_keikat($karhuid) {
         $kysely = DB::connection()->prepare('SELECT keikkaid FROM Keikka WHERE karhuid = :karhuid AND keikka.suoritettu is null');
         $kysely->execute(array('karhuid' => $karhuid));
         $rivit = $kysely->fetchAll();
         return self::muuta_rivit_keikoiksi($rivit);
     }
-    
+
     private static function muuta_rivit_keikoiksi($rivit) {
         $keikat = array();
         foreach ($rivit as $rivi) {
             $keikka = Keikka::etsi($rivi['keikkaid']);
-            if($keikka) {
+            if ($keikka) {
                 $keikka->lisaa_ilmoittautumistieto();
                 $keikat[] = $keikka;
             }
         }
         return $keikat;
     }
-    
-    
+
 }

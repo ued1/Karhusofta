@@ -34,9 +34,7 @@ class KarhuController extends BaseController {
         if (isset($parametrit['valitut_roolit'])) {
             $valitut_roolit = $parametrit['valitut_roolit'];
         }
-
-        $attribuutit = array(
-            'nimi' => $parametrit['nimi'],
+        $attribuutit = array('nimi' => $parametrit['nimi'],
             'tunnus' => $parametrit['tunnus'],
             'salasana' => $parametrit['salasana'],
             'saldo' => 0
@@ -52,15 +50,14 @@ class KarhuController extends BaseController {
             View::make('karhu/uusi.html', array('virheet' => $virheet, 'attribuutit' => $attribuutit, 'roolit' => $roolit, 'valitut_roolit' => $valitut_roolit));
         }
     }
-    
+
     public static function paivita($karhuid) {
         $parametrit = $_POST;
         $valitut_roolit = array();
         if (isset($parametrit['valitut_roolit'])) {
             $valitut_roolit = $parametrit['valitut_roolit'];
         }
-        $attribuutit = array(
-            'karhuid' => $karhuid,
+        $attribuutit = array('karhuid' => $karhuid,
             'nimi' => $parametrit['nimi'],
             'tunnus' => $parametrit['tunnus'],
             'salasana' => $parametrit['salasana']
@@ -89,4 +86,5 @@ class KarhuController extends BaseController {
             View::make('karhu/karhu.html', array('karhu' => $alkuperainen_karhu, 'virhe' => 'Karhua ei voi poistaa, koska se on ryhmänjohtajana meneillään olevassa keikassa.'));
         }
     }
+
 }
